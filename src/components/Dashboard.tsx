@@ -153,7 +153,7 @@ export default function Dashboard({ currentUser, currentToken, onLogout }: any) 
       try {
         const sheetUrl = import.meta.env.VITE_GOOGLE_SHEET_URL;
         if (!sheetUrl) {
-          throw new Error('Sila tetapkan VITE_GOOGLE_SHEET_URL di dalam environment variables.');
+          throw new Error('Pautan Google Sheet tidak dijumpai. Sila pastikan anda telah menetapkan VITE_GOOGLE_SHEET_URL di dalam "Secrets" (Settings > Secrets) dan mulakan semula pelayan.');
         }
 
         const response = await fetch(sheetUrl);

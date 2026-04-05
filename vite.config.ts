@@ -8,7 +8,13 @@ export default defineConfig(({mode}) => {
   return {
     plugins: [react(), tailwindcss()],
     define: {
-      'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY),
+      'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY || process.env.GEMINI_API_KEY),
+      'import.meta.env.VITE_GOOGLE_SHEET_URL': JSON.stringify(
+        env.VITE_GOOGLE_SHEET_URL || 
+        process.env.VITE_GOOGLE_SHEET_URL || 
+        env.GOOGLE_SHEET_URL || 
+        process.env.GOOGLE_SHEET_URL
+      ),
     },
     resolve: {
       alias: {

@@ -91,6 +91,8 @@ async function startServer() {
 
   app.listen(PORT, "0.0.0.0", () => {
     console.log(`Server running on http://localhost:${PORT}`);
+    console.log(`VITE_GOOGLE_SHEET_URL: ${process.env.VITE_GOOGLE_SHEET_URL ? 'set' : 'NOT set'}`);
+    console.log(`GOOGLE_SHEET_URL: ${process.env.GOOGLE_SHEET_URL ? 'set' : 'NOT set'}`);
   });
 }
 
