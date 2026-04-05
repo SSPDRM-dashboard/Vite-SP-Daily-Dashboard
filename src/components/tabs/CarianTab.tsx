@@ -504,14 +504,6 @@ export default function CarianTab({ currentUser, currentToken, isFullAdmin }: an
               <div className="font-bold text-xl md:text-2xl text-white tracking-wide">Sistem Pencarian Data Penugasan Anggota</div>
               <div className="text-[13px] text-white/80 mt-0.5">Semak rekod penugasan bulanan mengikut Nombor Badan</div>
             </div>
-            <div className="bg-white p-1 rounded-lg shadow-sm">
-              <img 
-                src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=https://ais-dev-kejsghjs6eyisx4ijhkzav-385574557079.asia-southeast1.run.app" 
-                alt="QR Code" 
-                className="w-10 h-10 md:w-12 md:h-12"
-                referrerPolicy="no-referrer"
-              />
-            </div>
           </div>
         </div>
         <div className="text-right">

@@ -21,6 +21,9 @@ const db = {
   records: [] as any[]
 };
 
+// Google Sheet URL (Hidden from frontend)
+const GOOGLE_SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQrkP-pR1MYTrbDlfJzKMo5YBCmBfYJNByrWyhlnFiEZnHpkGWfE4IpRyBV1nlENxNHAjj6KccyiEZ8/pub?gid=1963976228&single=true&output=csv';
+
 async function startServer() {
   const app = express();
   app.use(cors());
@@ -29,6 +32,23 @@ async function startServer() {
   // API Routes
   app.get('/api/warmup', (req, res) => {
     res.json({ ok: true });
+  });
+
+  // Proxy endpoint for Google Sheet data
+  app.get('/api/sheet-data', async (req, res) => {
+    try {
+      const response = await fetch(GOOGLE_SHEET_URL);
+      if (!response.ok) {
+        throw new Error(`Google Sheet fetch failed: ${response.status}`);
+      }
+      const data = await response.text();
+      // Set content type to text/plain or text/csv
+      res.setHeader('Content-Type', 'text/csv');
+      res.send(data);
+    } catch (error: any) {
+      console.error('Error fetching sheet data:', error);
+      res.status(500).json({ error: 'Gagal mengambil data dari Google Sheet', details: error.message });
+    }
   });
 
   app.get('/api/login', (req, res) => {
