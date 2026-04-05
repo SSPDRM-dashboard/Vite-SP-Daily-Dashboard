@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { normaliseDate, expandRows, normDaerah } from '../../lib/utils';
+import { GOOGLE_SHEET_URL } from '../../lib/constants';
 import Papa from 'papaparse';
 
 export default function RosterTab({ currentUser, isFullAdmin }: any) {
@@ -77,12 +78,11 @@ export default function RosterTab({ currentUser, isFullAdmin }: any) {
     setLoading(true);
     setError('');
     try {
-      const sheetUrl = import.meta.env.VITE_GOOGLE_SHEET_URL;
-      if (!sheetUrl) {
-        throw new Error('Pautan Google Sheet tidak dijumpai. Sila pastikan anda telah menetapkan VITE_GOOGLE_SHEET_URL di dalam "Secrets" (Settings > Secrets) dan mulakan semula pelayan.');
+      if (!GOOGLE_SHEET_URL) {
+        throw new Error('Pautan Google Sheet tidak dijumpai. Sila pastikan anda telah menetapkan GOOGLE_SHEET_URL di dalam "src/lib/constants.ts".');
       }
 
-      const response = await fetch(sheetUrl);
+      const response = await fetch(GOOGLE_SHEET_URL);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
