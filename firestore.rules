@@ -1,0 +1,89 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // ===============================================================
+    // Assumed Data Model
+    // ===============================================================
+    // Collection: users
+    // Document ID: {userId}
+    // Fields:
+    //   - username: string
+    //   - role: string
+    //   - district: string
+    //
+    // Collection: logs
+    // Document ID: {logId}
+    // Fields:
+    //   - username: string
+    //   - role: string
+    //   - tab: string
+    //   - loginDate: string
+    //   - loginTime: string
+    //   - logoutTime: string
+    //
+    // Collection: records
+    // Document ID: {recordId}
+    // Fields:
+    //   - daerah: string
+    //   - tarikh: string
+    //   - jenisTugas: string
+    //   - lokasi: string
+    //   - masaMula: string
+    //   - masaTamat: string
+    //   - kekuatan: number
+    //   - status: string
+    //   - catatan: string
+    //
+    // Collection: config
+    // Document ID: passwords
+    // Fields:
+    //   - carian_d1: string
+    //   - carian_d2: string
+    //   - carian_d3: string
+    //   - carian_d4: string
+    // ===============================================================
+
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() && 
+        (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin' ||
+         (request.auth.token.email == 'anak2nsky@gmail.com' && request.auth.token.email_verified == true) ||
+         request.auth.token.email == 'admin_emergency@sspdrm.local');
+    }
+
+    function isValidUser(data) {
+      return data.keys().hasAll(['username', 'role', 'district']) &&
+             data.username is string && data.username.size() > 0 &&
+             data.role in ['admin', 'user'] &&
+             data.district is string;
+    }
+
+    match /users/{userId} {
+      allow read: if isAuthenticated();
+      allow create: if (isAuthenticated() && request.auth.uid == userId && request.resource.data.role == 'user') || isAdmin();
+      allow update: if isAdmin() || (request.auth.uid == userId && request.resource.data.role == resource.data.role);
+      allow delete: if isAdmin() && userId != request.auth.uid;
+    }
+
+    match /logs/{logId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated() && request.resource.data.keys().hasAll(['username', 'loginDate', 'loginTime']);
+      allow update, delete: if isAdmin();
+    }
+
+    match /records/{recordId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated();
+      allow update: if isAuthenticated();
+      allow delete: if isAdmin();
+    }
+
+    match /config/{document=**} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+  }
+}

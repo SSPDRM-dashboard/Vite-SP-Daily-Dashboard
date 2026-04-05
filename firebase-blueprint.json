@@ -1,0 +1,99 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "A user of the system",
+      "type": "object",
+      "properties": {
+        "username": {
+          "type": "string",
+          "description": "The user's username"
+        },
+        "token": {
+          "type": "string",
+          "description": "The user's password/token"
+        },
+        "role": {
+          "type": "string",
+          "description": "The user's role (e.g., admin, user)"
+        },
+        "district": {
+          "type": "string",
+          "description": "The user's district (if applicable)"
+        }
+      },
+      "required": ["username", "token", "role"]
+    },
+    "Log": {
+      "title": "Log",
+      "description": "A login log entry",
+      "type": "object",
+      "properties": {
+        "username": {
+          "type": "string"
+        },
+        "role": {
+          "type": "string"
+        },
+        "tab": {
+          "type": "string"
+        },
+        "loginDate": {
+          "type": "string"
+        },
+        "loginTime": {
+          "type": "string"
+        },
+        "logoutTime": {
+          "type": "string"
+        }
+      },
+      "required": ["username", "loginDate", "loginTime"]
+    },
+    "Record": {
+      "title": "Record",
+      "description": "A data record",
+      "type": "object",
+      "properties": {
+        "daerah": { "type": "string" },
+        "tarikh": { "type": "string" },
+        "jenisTugas": { "type": "string" },
+        "lokasi": { "type": "string" },
+        "masaMula": { "type": "string" },
+        "masaTamat": { "type": "string" },
+        "kekuatan": { "type": "number" },
+        "status": { "type": "string" },
+        "catatan": { "type": "string" }
+      }
+    },
+    "PasswordConfig": {
+      "title": "PasswordConfig",
+      "description": "District passwords configuration",
+      "type": "object",
+      "properties": {
+        "carian_d1": { "type": "string" },
+        "carian_d2": { "type": "string" },
+        "carian_d3": { "type": "string" },
+        "carian_d4": { "type": "string" }
+      }
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/User" },
+      "description": "System users"
+    },
+    "/logs/{logId}": {
+      "schema": { "$ref": "#/entities/Log" },
+      "description": "Login logs"
+    },
+    "/records/{recordId}": {
+      "schema": { "$ref": "#/entities/Record" },
+      "description": "Data records"
+    },
+    "/config/passwords": {
+      "schema": { "$ref": "#/entities/PasswordConfig" },
+      "description": "District search passwords"
+    }
+  }
+}
