@@ -423,24 +423,24 @@ export default function AdminTab() {
                 />
               </div>
               <div>
-                <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Main Hour</label>
-                <input 
-                  type="text" 
-                  value={newCarianPassword}
-                  onChange={e => setNewCarianPassword(e.target.value)}
-                  className="w-full border-2 border-slate-200 rounded-lg p-2.5 text-sm outline-none focus:border-[#003087] bg-white"
-                  placeholder="Passcode Main Hour"
-                  required
-                />
-              </div>
-              <div>
-                <label className="block text-xs font-bold text-slate-500 uppercase mb-1">mainhour</label>
+                <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Carian</label>
                 <input 
                   type="text" 
                   value={newSenaraiPassword}
                   onChange={e => setNewSenaraiPassword(e.target.value)}
                   className="w-full border-2 border-slate-200 rounded-lg p-2.5 text-sm outline-none focus:border-[#003087] bg-white"
-                  placeholder="Passcode mainhour"
+                  placeholder="Passcode Carian"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Mainhour</label>
+                <input 
+                  type="text" 
+                  value={newCarianPassword}
+                  onChange={e => setNewCarianPassword(e.target.value)}
+                  className="w-full border-2 border-slate-200 rounded-lg p-2.5 text-sm outline-none focus:border-[#003087] bg-white"
+                  placeholder="Passcode Mainhour"
                   required
                 />
               </div>
@@ -510,7 +510,7 @@ export default function AdminTab() {
 
       <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
         <div className="p-4 md:p-5 pb-0 flex flex-col md:flex-row md:items-center justify-between gap-2">
-          <div className="font-bold text-lg text-slate-900">Login/Main Hour/mainhour/Roster Pengguna Sistem</div>
+          <div className="font-bold text-lg text-slate-900">Login/Senaraicarian/Mainhour/Roster Pengguna Sistem</div>
           <div className="flex items-center gap-3">
             <div className="bg-yellow-50 border border-yellow-200 p-2 px-3 rounded-lg flex items-center gap-3">
               <div className="text-xs font-bold text-yellow-800 uppercase tracking-wider">Passcode Sistem: <span className="text-sm font-mono">{passcode}</span></div>
@@ -544,7 +544,7 @@ export default function AdminTab() {
                 <th className="p-3 px-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Peranan</th>
                 <th className="p-3 px-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Daerah</th>
                 <th className="p-3 px-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Akses Tab</th>
-                <th className="p-3 px-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Login/Main Hour/mainhour/Roster</th>
+                <th className="p-3 px-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Login/Senaraicarian/Mainhour/Roster</th>
                 <th className="p-3 px-4 text-center text-xs font-bold text-slate-500 uppercase tracking-wider">Tindakan</th>
               </tr>
             </thead>
@@ -591,16 +591,16 @@ export default function AdminTab() {
                           <span className="font-mono bg-slate-100 px-1 rounded">{u.loginPassword || '—'}</span>
                         </div>
                         <div className="flex items-center justify-between text-[11px]">
-                          <span className="text-slate-400 uppercase font-bold">Main Hour:</span>
+                          <span className="text-slate-400 uppercase font-bold">Carian:</span>
+                          <span className="font-mono bg-slate-100 px-1 rounded">{u.senaraiPassword || '—'}</span>
+                        </div>
+                        <div className="flex items-center justify-between text-[11px]">
+                          <span className="text-slate-400 uppercase font-bold">Mainhour:</span>
                           <span className="font-mono bg-slate-100 px-1 rounded">{u.carianPassword || '—'}</span>
                         </div>
                         <div className="flex items-center justify-between text-[11px]">
                           <span className="text-slate-400 uppercase font-bold">Roster:</span>
                           <span className="font-mono bg-slate-100 px-1 rounded">{u.rosterPassword || '—'}</span>
-                        </div>
-                        <div className="flex items-center justify-between text-[11px]">
-                          <span className="text-slate-400 uppercase font-bold">mainhour:</span>
-                          <span className="font-mono bg-slate-100 px-1 rounded">{u.senaraiPassword || '—'}</span>
                         </div>
                       </div>
                     </td>
@@ -662,23 +662,23 @@ export default function AdminTab() {
                 />
               </div>
               <div>
-                <label className="block text-[10px] font-bold text-slate-400 uppercase mb-1">mainhour</label>
+                <label className="block text-[10px] font-bold text-slate-400 uppercase mb-1">Carian</label>
                 <input 
                   type="text" 
                   value={editSenaraiPass}
                   onChange={e => setEditSenaraiPass(e.target.value)}
                   className="w-full border-2 border-slate-200 rounded-lg p-2.5 text-sm outline-none focus:border-[#003087]"
-                  placeholder="mainhour Passcode"
+                  placeholder="Carian Passcode"
                 />
               </div>
               <div>
-                <label className="block text-[10px] font-bold text-slate-400 uppercase mb-1">Main Hour</label>
+                <label className="block text-[10px] font-bold text-slate-400 uppercase mb-1">Mainhour</label>
                 <input 
                   type="text" 
                   value={editCarianPass}
                   onChange={e => setEditCarianPass(e.target.value)}
                   className="w-full border-2 border-slate-200 rounded-lg p-2.5 text-sm outline-none focus:border-[#003087]"
-                  placeholder="Main Hour Passcode"
+                  placeholder="Mainhour Passcode"
                 />
               </div>
               <div>
