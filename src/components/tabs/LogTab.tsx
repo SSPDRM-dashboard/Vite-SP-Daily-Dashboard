@@ -9,6 +9,8 @@ export default function LogTab({ currentUser, currentToken }: any) {
   const [loading, setLoading] = useState(true);
   const [deleting, setDeleting] = useState<string | null>(null);
   const [error, setError] = useState('');
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
+  const [confirmDeleteAll, setConfirmDeleteAll] = useState(false);
 
   const fetchLogs = async () => {
     try {
@@ -56,21 +58,21 @@ export default function LogTab({ currentUser, currentToken }: any) {
   }, [currentUser, currentToken]);
 
   const handleDeleteLog = async (id: string) => {
-    if (!window.confirm('Adakah anda pasti mahu memadam log ini?')) return;
+    setConfirmDeleteId(null);
     setDeleting(id);
     try {
       await deleteDoc(doc(db, 'logs', id));
       setLogs(logs.filter(l => l.id !== id));
     } catch (e) {
       console.error("Error deleting log:", e);
-      alert('Gagal memadam log');
+      setError('Gagal memadam log');
     } finally {
       setDeleting(null);
     }
   };
 
   const handleDeleteAllLogs = async () => {
-    if (!window.confirm('Adakah anda pasti mahu memadam SEMUA log? Tindakan ini tidak boleh diundur.')) return;
+    setConfirmDeleteAll(false);
     setLoading(true);
     try {
       const batch = writeBatch(db);
@@ -81,7 +83,7 @@ export default function LogTab({ currentUser, currentToken }: any) {
       setLogs([]);
     } catch (e) {
       console.error("Error deleting all logs:", e);
-      alert('Gagal memadam semua log');
+      setError('Gagal memadam semua log');
     } finally {
       setLoading(false);
     }
@@ -127,7 +129,7 @@ export default function LogTab({ currentUser, currentToken }: any) {
           <div className="font-bold text-lg text-slate-900">Rekod Log Masuk</div>
           {logs.length > 0 && (
             <button 
-              onClick={handleDeleteAllLogs}
+              onClick={() => setConfirmDeleteAll(true)}
               className="text-xs bg-red-50 text-red-600 px-2 py-1 rounded border border-red-100 hover:bg-red-100 transition-colors flex items-center gap-1 font-bold"
             >
               <Trash2 size={12} /> PADAM SEMUA
@@ -171,7 +173,7 @@ export default function LogTab({ currentUser, currentToken }: any) {
                     <td className="p-2.5 px-2.5">{extractTime(l.logoutTime)}</td>
                     <td className="p-2.5 px-2.5 text-center">
                       <button 
-                        onClick={() => handleDeleteLog(l.id)}
+                        onClick={() => setConfirmDeleteId(l.id)}
                         disabled={deleting === l.id}
                         className="text-red-400 hover:text-red-600 p-1 transition-colors disabled:opacity-50"
                       >
@@ -185,6 +187,54 @@ export default function LogTab({ currentUser, currentToken }: any) {
           </table>
         </div>
       </div>
+
+      {/* Custom Modal for Confirm Delete Single */}
+      {confirmDeleteId && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl p-6 max-w-sm w-full shadow-xl">
+            <h3 className="text-lg font-bold text-slate-800 mb-2">Padam Log</h3>
+            <p className="text-slate-600 mb-6 text-sm">Adakah anda pasti mahu memadam log ini?</p>
+            <div className="flex justify-end gap-3">
+              <button 
+                onClick={() => setConfirmDeleteId(null)}
+                className="px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
+              >
+                Batal
+              </button>
+              <button 
+                onClick={() => handleDeleteLog(confirmDeleteId)}
+                className="px-4 py-2 text-sm font-semibold text-white bg-red-500 hover:bg-red-600 rounded-lg transition-colors"
+              >
+                Padam
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Custom Modal for Confirm Delete All */}
+      {confirmDeleteAll && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl p-6 max-w-sm w-full shadow-xl">
+            <h3 className="text-lg font-bold text-red-600 mb-2">Padam SEMUA Log</h3>
+            <p className="text-slate-600 mb-6 text-sm">Adakah anda pasti mahu memadam SEMUA log? Tindakan ini tidak boleh diundur.</p>
+            <div className="flex justify-end gap-3">
+              <button 
+                onClick={() => setConfirmDeleteAll(false)}
+                className="px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
+              >
+                Batal
+              </button>
+              <button 
+                onClick={handleDeleteAllLogs}
+                className="px-4 py-2 text-sm font-semibold text-white bg-red-600 hover:bg-red-700 rounded-lg transition-colors"
+              >
+                Ya, Padam Semua
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

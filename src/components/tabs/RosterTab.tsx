@@ -17,10 +17,6 @@ export default function RosterTab({ currentUser, isFullAdmin }: any) {
   const years = Array.from({ length: 5 }, (_, i) => new Date().getFullYear() + 1 - i);
   const months = ['Januari', 'Februari', 'Mac', 'April', 'Mei', 'Jun', 'Julai', 'Ogos', 'September', 'Oktober', 'November', 'Disember'];
 
-  useEffect(() => {
-    fetchData();
-  }, []);
-
   const dName: Record<string, string> = { d1: 'MELAKA TENGAH', d2: 'JASIN', d3: 'ALOR GAJAH', d4: 'IPK SSPDRM' };
 
   const allowedDaerahsList = useMemo(() => {
@@ -37,6 +33,16 @@ export default function RosterTab({ currentUser, isFullAdmin }: any) {
     }
     return allowed;
   }, [isFullAdmin, currentUser]);
+
+  useEffect(() => {
+    if (allowedDaerahsList.length > 0 && !allowedDaerahsList.includes(daerahFilter)) {
+      setDaerahFilter(allowedDaerahsList[0]);
+    }
+  }, [allowedDaerahsList, daerahFilter]);
+
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   // Reset page when filters change
   useEffect(() => {
