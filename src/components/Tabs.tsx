@@ -5,7 +5,7 @@ export default function Tabs({ activeTab, setActiveTab, allowedDistricts, select
     { id: 'd2', label: '🟢 Jasin', colorClass: 'hover:text-green-700 active-tab-d2' },
     { id: 'd3', label: '🟡 Alor Gajah', colorClass: 'hover:text-amber-700 active-tab-d3' },
     { id: 'd4', label: '🟣 IPK SSPDRM', colorClass: 'hover:text-purple-700 active-tab-d4' },
-    { id: 'carian', label: '🔍 Carian', colorClass: 'hover:text-[#003087] active-tab-all' },
+    { id: 'carian', label: '🔍 Main Hour', colorClass: 'hover:text-[#003087] active-tab-all' },
     { id: 'roster', label: '📅 Roster', colorClass: 'hover:text-[#003087] active-tab-all' },
     { id: 'admin', label: '⚙️ Tetapan Admin', colorClass: 'hover:text-[#003087] active-tab-all' },
     { id: 'log', label: '📋 Log Masuk', colorClass: 'hover:text-[#003087] active-tab-all' },

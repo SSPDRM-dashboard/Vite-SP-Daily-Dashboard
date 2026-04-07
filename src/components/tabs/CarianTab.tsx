@@ -321,15 +321,24 @@ export default function CarianTab({ currentUser, currentToken, isFullAdmin }: an
 
         <div className="bg-white p-8 border border-slate-200 shadow-sm overflow-x-auto mt-6 print:p-0 print:border-none print:shadow-none print:mt-0 print:overflow-visible">
           <style type="text/css" media="print">
-            {`@page { size: A4 portrait; margin: 8mm; }`}
+            {`
+              @page { size: A4 portrait; margin: 5mm; }
+              body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+              .print-container {
+                page-break-inside: avoid;
+                transform: scale(0.95);
+                transform-origin: top left;
+                width: 105%;
+              }
+            `}
           </style>
-          <div className="min-w-[800px] text-black font-serif text-sm print:min-w-full" style={{ fontFamily: '"Times New Roman", Times, serif' }}>
+          <div className="min-w-[800px] text-black font-serif text-[11px] print-container print:min-w-full" style={{ fontFamily: '"Times New Roman", Times, serif' }}>
             {/* Header */}
-            <div className="text-right text-xs font-bold mb-4 print:mb-1">
+            <div className="text-right text-[10px] font-bold mb-2 print:mb-1">
               Lampiran "A"<br/>
               BORANG JPJKK/KSS001/22
             </div>
-            <div className="text-center font-bold text-base mb-6 print:mb-2">
+            <div className="text-center font-bold text-sm mb-4 print:mb-1">
               <br/>
               SUKARELAWAN SIMPANAN POLIS DIRAJA MALAYSIA (SSPDRM)<br/>
               KONTINJEN : MELAKA<br/>
@@ -337,45 +346,45 @@ export default function CarianTab({ currentUser, currentToken, isFullAdmin }: an
             </div>
 
             {/* Info */}
-            <div className="grid grid-cols-2 gap-4 mb-4 print:mb-2 font-bold text-xs">
+            <div className="grid grid-cols-2 gap-4 mb-2 print:mb-1 font-bold text-[10px]">
               <div>
-                <div className="grid grid-cols-[120px_auto] mb-1">
+                <div className="grid grid-cols-[100px_auto] mb-0.5">
                   <div>PANGKAT / NO</div><div>: {pangkat} {noBadan}</div>
                 </div>
-                <div className="grid grid-cols-[120px_auto] mb-1">
+                <div className="grid grid-cols-[100px_auto] mb-0.5">
                   <div>NAMA</div><div>: {nama}</div>
                 </div>
-                <div className="grid grid-cols-[120px_auto] mb-4">
+                <div className="grid grid-cols-[100px_auto] mb-2">
                   <div>DAERAH</div><div>: {daerah.replace('BALAI POLIS ', '')}</div>
                 </div>
               </div>
               <div>
-                <div className="grid grid-cols-[180px_auto] mb-1">
+                <div className="grid grid-cols-[140px_auto] mb-0.5">
                   <div>NO. KAD PENGENALAN</div><div>: {profile?.ic || ''}</div>
                 </div>
-                <div className="grid grid-cols-[180px_auto]">
+                <div className="grid grid-cols-[140px_auto]">
                   <div>NAMA DAN NO.AKAUN BANK</div><div>: {profile?.bankName ? `${profile.bankName} ${profile.bankAccount}` : ''}</div>
                 </div>
               </div>
             </div>
 
             {/* Table */}
-            <table className="w-full border-collapse border border-black text-xs text-center">
-              <thead className="text-[10px]">
+            <table className="w-full border-collapse border border-black text-[10px] text-center">
+              <thead className="text-[9px]">
                 <tr>
-                  <th className="border border-black p-1" rowSpan={2}>BIL</th>
-                  <th className="border border-black p-1" rowSpan={2}>TARIKH</th>
-                  <th className="border border-black p-1" colSpan={2}>MASA</th>
-                  <th className="border border-black p-1 whitespace-nowrap" rowSpan={2}>JENIS TUGAS</th>
-                  <th className="border border-black p-1 whitespace-nowrap w-[12%]" rowSpan={2}>SD MASUK</th>
-                  <th className="border border-black p-1 whitespace-nowrap w-[12%]" rowSpan={2}>SD KELUAR</th>
-                  <th className="border border-black p-1" rowSpan={2}>JUMLAH<br/>JAM<br/>BERTUGAS</th>
-                  <th className="border border-black p-1" rowSpan={2}>KADAR ELAUN<br/>SEJAM</th>
-                  <th className="border border-black p-1" rowSpan={2}>ELAUN<br/>PENUGASAN</th>
+                  <th className="border border-black p-0.5" rowSpan={2}>BIL</th>
+                  <th className="border border-black p-0.5" rowSpan={2}>TARIKH</th>
+                  <th className="border border-black p-0.5" colSpan={2}>MASA</th>
+                  <th className="border border-black p-0.5 whitespace-nowrap" rowSpan={2}>JENIS TUGAS</th>
+                  <th className="border border-black p-0.5 whitespace-nowrap w-[12%]" rowSpan={2}>SD MASUK</th>
+                  <th className="border border-black p-0.5 whitespace-nowrap w-[12%]" rowSpan={2}>SD KELUAR</th>
+                  <th className="border border-black p-0.5" rowSpan={2}>JUMLAH<br/>JAM<br/>BERTUGAS</th>
+                  <th className="border border-black p-0.5" rowSpan={2}>KADAR ELAUN<br/>SEJAM</th>
+                  <th className="border border-black p-0.5" rowSpan={2}>ELAUN<br/>PENUGASAN</th>
                 </tr>
                 <tr>
-                  <th className="border border-black p-1">MULA</th>
-                  <th className="border border-black p-1">TAMAT</th>
+                  <th className="border border-black p-0.5">MULA</th>
+                  <th className="border border-black p-0.5">TAMAT</th>
                 </tr>
               </thead>
               <tbody>
@@ -384,17 +393,17 @@ export default function CarianTab({ currentUser, currentToken, isFullAdmin }: an
                   
                   if (!r) {
                     return (
-                      <tr key={idx} className="h-[28px] print:h-[20px]">
-                        <td className="border border-black p-1"></td>
-                        <td className="border border-black p-1"></td>
-                        <td className="border border-black p-1"></td>
-                        <td className="border border-black p-1"></td>
-                        <td className="border border-black p-1"></td>
-                        <td className="border border-black p-1"></td>
-                        <td className="border border-black p-1"></td>
-                        <td className="border border-black p-1"></td>
-                        <td className="border border-black p-1"></td>
-                        <td className="border border-black p-1"></td>
+                      <tr key={idx} className="h-[20px] print:h-[16px]">
+                        <td className="border border-black p-0.5"></td>
+                        <td className="border border-black p-0.5"></td>
+                        <td className="border border-black p-0.5"></td>
+                        <td className="border border-black p-0.5"></td>
+                        <td className="border border-black p-0.5"></td>
+                        <td className="border border-black p-0.5"></td>
+                        <td className="border border-black p-0.5"></td>
+                        <td className="border border-black p-0.5"></td>
+                        <td className="border border-black p-0.5"></td>
+                        <td className="border border-black p-0.5"></td>
                       </tr>
                     );
                   }
@@ -420,66 +429,66 @@ export default function CarianTab({ currentUser, currentToken, isFullAdmin }: an
                   const sdData = sdMap?.[normTarikh] || { masuk: '', keluar: '' };
 
                   return (
-                    <tr key={idx} className="h-[28px] print:h-[20px]">
-                      <td className="border border-black p-1">{idx + 1}</td>
-                      <td className="border border-black p-1 font-bold">&nbsp;{tarikh}&nbsp;</td>
-                      <td className="border border-black p-1 font-bold">{masaMula ? String(masaMula).replace(':', '') : ''}</td>
-                      <td className="border border-black p-1 font-bold">{masaTamat}</td>
-                      <td className="border border-black p-1 font-bold uppercase whitespace-nowrap">&nbsp;{jenisTugas}&nbsp;</td>
-                      <td className="border border-black p-1 font-bold">{sdData.masuk}</td>
-                      <td className="border border-black p-1 font-bold">{sdData.keluar}</td>
-                      <td className="border border-black p-1 font-bold">{jam}</td>
-                      <td className="border border-black p-1">RM &nbsp;&nbsp;&nbsp;{kadarElaun.toFixed(2)}</td>
-                      <td className="border border-black p-1 font-bold">{elaun.toFixed(2)}</td>
+                    <tr key={idx} className="h-[20px] print:h-[16px]">
+                      <td className="border border-black p-0.5">{idx + 1}</td>
+                      <td className="border border-black p-0.5 font-bold">&nbsp;{tarikh}&nbsp;</td>
+                      <td className="border border-black p-0.5 font-bold">{masaMula ? String(masaMula).replace(':', '') : ''}</td>
+                      <td className="border border-black p-0.5 font-bold">{masaTamat}</td>
+                      <td className="border border-black p-0.5 font-bold uppercase whitespace-nowrap">&nbsp;{jenisTugas}&nbsp;</td>
+                      <td className="border border-black p-0.5 font-bold">{sdData.masuk}</td>
+                      <td className="border border-black p-0.5 font-bold">{sdData.keluar}</td>
+                      <td className="border border-black p-0.5 font-bold">{jam}</td>
+                      <td className="border border-black p-0.5">RM &nbsp;&nbsp;&nbsp;{kadarElaun.toFixed(2)}</td>
+                      <td className="border border-black p-0.5 font-bold">{elaun.toFixed(2)}</td>
                     </tr>
                   );
                 })}
                 {/* Totals */}
                 <tr>
-                  <td className="border border-black p-1" colSpan={6} rowSpan={2}></td>
-                  <td className="border border-black p-1 font-bold text-right px-2">JUMLAH JAM<br/>PENUGASAN</td>
-                  <td className="border border-black p-1 font-bold text-lg">{totalJam}</td>
-                  <td className="border border-black p-1 font-bold text-right px-2">JUMLAH ELAUN<br/>RM</td>
-                  <td className="border border-black p-1 font-bold text-lg">{(totalJam * kadarElaun).toFixed(2)}</td>
+                  <td className="border border-black p-0.5" colSpan={6} rowSpan={2}></td>
+                  <td className="border border-black p-0.5 font-bold text-right px-1 text-[9px]">JUMLAH JAM<br/>PENUGASAN</td>
+                  <td className="border border-black p-0.5 font-bold text-sm">{totalJam}</td>
+                  <td className="border border-black p-0.5 font-bold text-right px-1 text-[9px]">JUMLAH ELAUN<br/>RM</td>
+                  <td className="border border-black p-0.5 font-bold text-sm">{(totalJam * kadarElaun).toFixed(2)}</td>
                 </tr>
                 <tr>
-                  <td className="border border-black p-1 font-bold text-right px-2">JUMLAH JAM<br/>DITUNTUT</td>
-                  <td className="border border-black p-1 font-bold text-lg">{Math.min(totalJam, 48)}</td>
-                  <td className="border border-black p-1 font-bold text-right px-2">JUMLAH ELAUN<br/>DITUNTUT RM</td>
-                  <td className="border border-black p-1 font-bold text-lg">{(Math.min(totalJam, 48) * kadarElaun).toFixed(2)}</td>
+                  <td className="border border-black p-0.5 font-bold text-right px-1 text-[9px]">JUMLAH JAM<br/>DITUNTUT</td>
+                  <td className="border border-black p-0.5 font-bold text-sm">{Math.min(totalJam, 48)}</td>
+                  <td className="border border-black p-0.5 font-bold text-right px-1 text-[9px]">JUMLAH ELAUN<br/>DITUNTUT RM</td>
+                  <td className="border border-black p-0.5 font-bold text-sm">{(Math.min(totalJam, 48) * kadarElaun).toFixed(2)}</td>
                 </tr>
               </tbody>
             </table>
 
             {/* Signatures */}
-            <div className="grid grid-cols-3 gap-4 mt-8 print:mt-2 text-xs">
+            <div className="grid grid-cols-3 gap-2 mt-4 print:mt-1 text-[10px]">
               <div>
-                <br/><br/>
+                <br/>
                 Saya mengaku menjalankan penugasan/latihan<br/>
                 pada bulan tersebut adalah benar<br/>
-                <br/><br/><br/>
-                <div className="h-12 print:h-6"></div>
+                <br/><br/>
+                <div className="h-8 print:h-4"></div>
                 .......................................................................<br/>
                 Tandatangan yang menuntut<br/>
                 Tarikh :
               </div>
               <div>
-                <br/><br/>
+                <br/>
                 Saya telah menyemak pemeriksaan dan dapati tuntutan<br/>
                 jam penugasan / latihan tersebut adalah <strong>BENAR</strong><br/>
-                <br/><br/><br/>
-                <div className="h-12 print:h-6"></div>
+                <br/><br/>
+                <div className="h-8 print:h-4"></div>
                 .......................................................................<br/>
                 Nama :<br/>
                 Jawatan :<br/>
                 Tarikh :
               </div>
               <div>
-                <br/><br/>
+                <br/>
                 Saya mengesahkan tuntutan penugasan<br/>
                 latihan tersebut adalah <strong>BENAR</strong><br/>
-                <br/><br/><br/>
-                <div className="h-12 print:h-6"></div>
+                <br/><br/>
+                <div className="h-8 print:h-4"></div>
                 .......................................................................<br/>
                 Nama :<br/>
                 Jawatan :<br/>

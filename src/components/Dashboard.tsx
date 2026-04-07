@@ -43,33 +43,25 @@ export default function Dashboard({ currentUser, currentToken, onLogout }: any) 
     
     const d = (currentUser?.district || '').trim().toLowerCase();
     
+    let tabs: string[] = [];
+    
     if (d === 'all') {
-      const tabs = ['today', 'd1', 'd2', 'd3', 'd4'];
-      if (currentUser?.canSearch) {
-        tabs.push('carian');
+      if (currentUser?.senaraiPassword && currentUser.senaraiPassword !== '-') {
+        tabs = ['today', 'd1', 'd2', 'd3', 'd4'];
       }
-      if (currentUser?.canAccessRoster) {
-        tabs.push('roster');
+    } else {
+      const allowed = d.split('/').map((x: string) => x.trim()).filter((x: string) => ['d1', 'd2', 'd3', 'd4'].includes(x));
+      if (currentUser?.senaraiPassword && currentUser.senaraiPassword !== '-') {
+        tabs = [...allowed];
       }
-      return tabs;
     }
     
-    const allowed = d.split('/').map((x: string) => x.trim()).filter((x: string) => ['d1', 'd2', 'd3', 'd4'].includes(x));
-    
-    const tabs = [...allowed];
-    if (currentUser?.canSearch) {
+    if (currentUser?.carianPassword && currentUser.carianPassword !== '-') {
       tabs.push('carian');
     }
-    if (currentUser?.canAccessRoster) {
+    if (currentUser?.rosterPassword && currentUser.rosterPassword !== '-') {
       tabs.push('roster');
     }
-    
-    // If user has specific districts, they should also see the 'today' tab 
-    // but only filtered for their districts? 
-    // Actually, the user wants 'Semua Daerah' to see everything.
-    // If they have specific districts, they should probably see 'today' but it might be confusing if it shows everything.
-    // Let's keep it simple: if they have 'all', they see everything.
-    // If they have specific districts, they see those districts.
     
     return tabs.length > 0 ? tabs : ['today']; 
   }, [currentUser, isAdmin, isSuperAdmin]);
@@ -258,12 +250,7 @@ export default function Dashboard({ currentUser, currentToken, onLogout }: any) 
           </div>
         )}
         
-        {loading && !error && (
-          <div className="bg-blue-50 border border-blue-200 text-blue-800 rounded-lg p-4 mb-6 flex items-center gap-3 animate-pulse">
-            <Loader2 className="w-5 h-5 animate-spin" />
-            <div className="text-sm font-medium">Sedang memuatkan data terkini dari Google Sheet...</div>
-          </div>
-        )}
+        
 
         {needsUnlock ? (
           <div className="flex flex-col items-center justify-center py-20 bg-white rounded-2xl border-2 border-dashed border-slate-200 animate-in fade-in zoom-in duration-300">

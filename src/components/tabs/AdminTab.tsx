@@ -20,8 +20,6 @@ export default function AdminTab() {
   const [newRosterPassword, setNewRosterPassword] = useState('123456');
   const [newRole, setNewRole] = useState('user');
   const [newDistrict, setNewDistrict] = useState('d1');
-  const [newCanSearch, setNewCanSearch] = useState(false);
-  const [newCanAccessRoster, setNewCanAccessRoster] = useState(false);
   const [addLoading, setAddLoading] = useState(false);
   const [addError, setAddError] = useState('');
   const [addSuccess, setAddSuccess] = useState('');
@@ -200,8 +198,6 @@ export default function AdminTab() {
         username: newUsername.trim().toLowerCase(),
         role: newRole,
         district: newRole === 'admin' ? '' : newDistrict,
-        canSearch: newCanSearch,
-        canAccessRoster: newCanAccessRoster,
         loginPassword: newPassword,
         senaraiPassword: newSenaraiPassword,
         carianPassword: newCarianPassword,
@@ -222,8 +218,6 @@ export default function AdminTab() {
       setNewRosterPassword('123456');
       setNewRole('user');
       setNewDistrict('d1');
-      setNewCanSearch(false);
-      setNewCanAccessRoster(false);
       setIsAddingUser(false);
       setIsAddUserUnlocked(false);
       setAddUserPasscodeInput('');
@@ -250,28 +244,6 @@ export default function AdminTab() {
       fetchUsers();
     } catch (err) {
       handleFirestoreError(err, OperationType.DELETE, `users/${userId}`);
-    }
-  };
-
-  const toggleCanSearch = async (userId: string, currentStatus: boolean) => {
-    try {
-      await updateDoc(doc(db, 'users', userId), {
-        canSearch: !currentStatus
-      });
-      setUsers(users.map(u => u.id === userId ? { ...u, canSearch: !currentStatus } : u));
-    } catch (err) {
-      handleFirestoreError(err, OperationType.UPDATE, `users/${userId}`);
-    }
-  };
-
-  const toggleCanAccessRoster = async (userId: string, currentStatus: boolean) => {
-    try {
-      await updateDoc(doc(db, 'users', userId), {
-        canAccessRoster: !currentStatus
-      });
-      setUsers(users.map(u => u.id === userId ? { ...u, canAccessRoster: !currentStatus } : u));
-    } catch (err) {
-      handleFirestoreError(err, OperationType.UPDATE, `users/${userId}`);
     }
   };
 
@@ -385,26 +357,6 @@ export default function AdminTab() {
                 </div>
               )}
 
-              <div className="flex flex-col gap-2 pt-2">
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <input 
-                    type="checkbox" 
-                    checked={newCanSearch}
-                    onChange={e => setNewCanSearch(e.target.checked)}
-                    className="w-4 h-4 text-[#003087] rounded border-slate-300 focus:ring-[#003087]"
-                  />
-                  <span className="text-sm font-semibold text-slate-700">Benarkan akses ke tab "Main Hour"</span>
-                </label>
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <input 
-                    type="checkbox" 
-                    checked={newCanAccessRoster}
-                    onChange={e => setNewCanAccessRoster(e.target.checked)}
-                    className="w-4 h-4 text-[#003087] rounded border-slate-300 focus:ring-[#003087]"
-                  />
-                  <span className="text-sm font-semibold text-slate-700">Benarkan akses ke tab "Roster"</span>
-                </label>
-              </div>
             </div>
 
             {/* Right Column: Passwords */}
@@ -570,18 +522,15 @@ export default function AdminTab() {
                     </td>
                     <td className="p-3 px-4">
                       <div className="flex flex-col gap-1">
-                        <button 
-                          onClick={() => toggleCanSearch(u.id, u.canSearch)}
-                          className={`text-[10px] font-bold px-2 py-0.5 rounded text-left flex items-center justify-between ${u.canSearch ? 'bg-green-100 text-green-700' : 'bg-slate-100 text-slate-400'}`}
-                        >
-                          Main Hour {u.canSearch ? '✅' : '❌'}
-                        </button>
-                        <button 
-                          onClick={() => toggleCanAccessRoster(u.id, u.canAccessRoster)}
-                          className={`text-[10px] font-bold px-2 py-0.5 rounded text-left flex items-center justify-between ${u.canAccessRoster ? 'bg-green-100 text-green-700' : 'bg-slate-100 text-slate-400'}`}
-                        >
-                          Roster {u.canAccessRoster ? '✅' : '❌'}
-                        </button>
+                        <div className={`text-[10px] font-bold px-2 py-0.5 rounded text-left flex items-center justify-between ${u.senaraiPassword && u.senaraiPassword !== '-' ? 'bg-green-100 text-green-700' : 'bg-slate-100 text-slate-400'}`}>
+                          Carian {u.senaraiPassword && u.senaraiPassword !== '-' ? '✅' : '❌'}
+                        </div>
+                        <div className={`text-[10px] font-bold px-2 py-0.5 rounded text-left flex items-center justify-between ${u.carianPassword && u.carianPassword !== '-' ? 'bg-green-100 text-green-700' : 'bg-slate-100 text-slate-400'}`}>
+                          Main Hour {u.carianPassword && u.carianPassword !== '-' ? '✅' : '❌'}
+                        </div>
+                        <div className={`text-[10px] font-bold px-2 py-0.5 rounded text-left flex items-center justify-between ${u.rosterPassword && u.rosterPassword !== '-' ? 'bg-green-100 text-green-700' : 'bg-slate-100 text-slate-400'}`}>
+                          Roster {u.rosterPassword && u.rosterPassword !== '-' ? '✅' : '❌'}
+                        </div>
                       </div>
                     </td>
                     <td className="p-3 px-4">
