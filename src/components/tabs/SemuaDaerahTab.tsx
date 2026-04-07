@@ -142,7 +142,7 @@ export default function SemuaDaerahTab({ data, dateStr, loading }: any) {
                 <th className="p-2.5 px-2.5 text-xs font-bold text-slate-500 uppercase tracking-wider">Timestamp</th>
                 <th className="p-2.5 px-2.5 text-xs font-bold text-slate-500 uppercase tracking-wider">Daerah</th>
                 <th className="p-2.5 px-2.5 text-xs font-bold text-slate-500 uppercase tracking-wider">Nama & No. Badan</th>
-                <th className="p-2.5 px-2.5 text-xs font-bold text-slate-500 uppercase tracking-wider">Balai Pendaftaran</th>
+                <th className="p-2.5 px-2.5 text-xs font-bold text-slate-500 uppercase tracking-wider">Balai Berdaftar</th>
                 <th className="p-2.5 px-2.5 text-xs font-bold text-slate-500 uppercase tracking-wider">Balai Bertugas</th>
                 <th className="p-2.5 px-2.5 text-xs font-bold text-slate-500 uppercase tracking-wider">Jenis Tugasan</th>
                 <th className="p-2.5 px-2.5 text-xs font-bold text-slate-500 uppercase tracking-wider">Lain-lain Tugas</th>

@@ -159,7 +159,7 @@ export function expandRows(rows: any[]) {
     
     let bertugas = '—';
     if (isArray) {
-      bertugas = [2, 4, 6, 8].map(i => String(row[i] || '').trim()).find(v => v) || '—';
+      bertugas = String(row[10] || '').trim() || '—';
     } else {
       bertugas = String(row.bertugas || '—').trim();
     }
@@ -184,7 +184,7 @@ export function expandRows(rows: any[]) {
     if (masa && masa !== '—' && jam > 0) {
       masaTamat = calculateEndTime(masa, jam);
     }
-    const balai = String(isArray ? row[10] : row.balai || row.lokasi || '').trim() || '—';
+    const balai = String(isArray ? ([2, 4, 6, 8].map(i => String(row[i] || '').trim()).find(v => v) || '—') : row.balai || row.lokasi || '').trim() || '—';
     
     let nama = '';
     if (isArray) {
