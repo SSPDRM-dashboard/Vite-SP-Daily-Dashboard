@@ -150,85 +150,110 @@ export function calculateEndTime(startTime: string, durationHours: number): stri
 
 export function expandRows(rows: any[]) {
   const out: any[] = [];
-  rows.forEach(row => {
+  let lastDaerah = '';
+  
+  rows.forEach((row, rowIdx) => {
     // Handle both array format (from Google Sheets) and object format (from Firestore)
     const isArray = Array.isArray(row);
     
-    const timestamp = isArray ? String(row[0] || '') : String(row.timestamp || '');
-    const daerah = normDaerah(isArray ? row[1] : row.daerah);
-    
-    let bertugas = '—';
-    if (isArray) {
-      bertugas = String(row[10] || '').trim() || '—';
-    } else {
-      bertugas = String(row.bertugas || '—').trim();
+    if (!isArray) {
+      out.push(row);
+      return;
     }
+
+    const timestamp = String(row[0] || '');
+    let daerah = normDaerah(row[1]);
     
-    const pejawatan = String(isArray ? row[12] : row.pejawatan || '').trim();
-    const jantina = String(isArray ? row[13] : row.jantina || '').trim();
-    const pangkat = String(isArray ? row[14] : row.pangkat || '').trim();
+    // Inherit daerah if empty (common in manual sheets)
+    if (!daerah && lastDaerah) {
+      daerah = lastDaerah;
+    } else if (daerah) {
+      lastDaerah = daerah;
+    }
+
+    if (!daerah) return;
+
+    // Common fields for all people in this row
+    const bertugas = String(row[10] || '').trim() || '—';
+    const pejawatan = String(row[12] || '').trim();
+    const jantina = String(row[13] || '').trim();
+    const pangkat = String(row[14] || '').trim();
     
-    let tarikh = String(isArray ? row[15] : row.tarikh || '').trim();
-    if (!tarikh && timestamp) tarikh = normaliseDate(timestamp);
+    let tarikh = String(row[15] || '').trim();
+    if (tarikh) tarikh = normaliseDate(tarikh);
+    else if (timestamp) tarikh = normaliseDate(timestamp);
     
-    let jenis = normalizeJenis(String(isArray ? row[16] : row.jenisTugas || row.jenis || '').trim());
-    const lain = String(isArray ? row[19] : row.lain || row.catatan || '').trim();
-    const masa = formatTime(isArray ? row[17] : row.masaMula || row.masa);
-    const jam = parseFloat(isArray ? row[18] : row.jam || row.kekuatan) || 0;
+    let jenis = normalizeJenis(String(row[16] || '').trim());
+    const lain = String(row[19] || '').trim();
+    const masa = formatTime(row[17]);
+    const jam = parseFloat(row[18]) || 0;
     
     if (jenis === 'LAIN-LAIN TUGAS' && lain) {
       jenis = lain;
     }
     
-    let masaTamat = formatTime(isArray ? row[23] : row.masaTamat || '');
+    let masaTamat = formatTime(row[23] || '');
     if (masa && masa !== '—' && jam > 0) {
       masaTamat = calculateEndTime(masa, jam);
     }
-    const balai = String(isArray ? ([2, 4, 6, 8].map(i => String(row[i] || '').trim()).find(v => v) || '—') : row.balai || row.lokasi || '').trim() || '—';
-    
-    let nama = '';
-    if (isArray) {
-      nama = [3, 5, 7, 9].map(i => String(row[i] || '').trim()).find(v => v) || '';
-    } else {
-      nama = String(row.nama || '').trim();
-    }
-    
-    let noBadan = '';
-    if (isArray) {
-      noBadan = String(row[11] || '').trim();
-    } else {
-      noBadan = String(row.noBadan || '').trim();
-    }
 
-    // Extract noBadan from nama if it's missing
-    if (!noBadan && nama) {
-      // Look for a word that is mostly digits (e.g., 1528, G1234, RF12345)
-      const match = nama.match(/\b([A-Za-z]{0,2}\d{3,6})\b/);
-      if (match) {
-        noBadan = match[1];
+    // Check all 4 possible person slots in the row
+    // Slot 1: [2, 3], Slot 2: [4, 5], Slot 3: [6, 7], Slot 4: [8, 9]
+    const slots = [
+      { b: 2, n: 3 },
+      { b: 4, n: 5 },
+      { b: 6, n: 7 },
+      { b: 8, n: 9 }
+    ];
+
+    // Create a combined search text for the entire row to make searching easier
+    const rowSearchText = slots.map(s => String(row[s.n] || '')).join(' ') + ' ' + String(row[11] || '');
+
+    slots.forEach((slot, slotIdx) => {
+      const balaiVal = String(row[slot.b] || '').trim();
+      const namaVal = String(row[slot.n] || '').trim();
+
+      // If there's a name or a balai in this slot, it's a valid assignment
+      if (namaVal || (balaiVal && balaiVal !== '—')) {
+        let noBadan = '';
+        
+        // Column 11 is the No Badan column. 
+        const sharedNoBadan = String(row[11] || '').trim();
+        
+        // Extract noBadan from nama if it's there (e.g., "AHMAD (39824)")
+        // More flexible regex to catch IDs like 39824, RF39824, G/39824 etc.
+        if (namaVal) {
+          const match = namaVal.match(/([A-Z0-9/]{2,10}\d{3,7}|\b\d{4,7}\b)/i);
+          if (match) {
+            noBadan = match[0];
+          }
+        }
+
+        // If no ID found in name, use the shared No Badan column
+        if (!noBadan) {
+          noBadan = sharedNoBadan;
+        }
+
+        out.push({ 
+          id: `${timestamp}-${rowIdx}-${slotIdx}`,
+          timestamp, 
+          daerah, 
+          balai: balaiVal || '—', 
+          nama: namaVal || balaiVal, 
+          bertugas, 
+          pejawatan, 
+          jantina, 
+          pangkat, 
+          jenis, 
+          jam, 
+          masa, 
+          masaTamat, 
+          tarikh, 
+          lain,
+          noBadan,
+          rowSearchText // Add this for easier searching in CarianTab
+        });
       }
-    }
-
-    if (!daerah) return;
-    if (!nama && balai === '—') return;
-    
-    out.push({ 
-      id: row.id || timestamp,
-      timestamp, 
-      daerah, 
-      balai, 
-      nama: nama || balai, 
-      bertugas, 
-      pejawatan, 
-      jantina, 
-      pangkat, 
-      jenis, 
-      jam, 
-      masa, 
-      masaTamat, 
-      tarikh, 
-      lain,
-      noBadan
     });
   });
   return out;

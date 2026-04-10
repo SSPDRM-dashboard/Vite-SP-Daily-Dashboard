@@ -174,7 +174,7 @@ export default function SemuaDaerahTab({ data, dateStr, loading }: any) {
                           <td className="p-2.5 px-2.5 text-[11px]">{r.timestamp}</td>
                           <td className="p-2.5 px-2.5 font-bold text-[#003087]">{r.daerah}</td>
                           <td className="p-2.5 px-2.5 font-bold">
-                            {r.nama}
+                            {r.nama} {r.noBadan && !r.nama.includes(r.noBadan) ? `(${r.noBadan})` : ''}
                             {isDuplicate && <span className="ml-2 text-[9px] bg-red-600 text-white px-1 rounded font-bold uppercase">Bertindih</span>}
                           </td>
                           <td className="p-2.5 px-2.5">{r.balai.replace('BALAI POLIS ', '')}</td>

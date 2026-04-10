@@ -55,12 +55,16 @@ export default function CarianTab({ currentUser, currentToken, isFullAdmin }: an
       const searchStr = searchNoBadan.toUpperCase();
       
       const filteredBySearch = allData.filter(r => {
-        // Search by noBadan or nama (partial or full, case-insensitive)
+        // Search by noBadan, nama, or the combined rowSearchText (partial or full, case-insensitive)
         const nama = String(r.nama || '').toUpperCase();
         const noBadanStr = String(r.noBadan || '').toUpperCase();
+        const rowSearchText = String(r.rowSearchText || '').toUpperCase();
         
-        const matchNoBadan = nama.includes(searchStr) || noBadanStr.includes(searchStr);
-        if (!matchNoBadan) return false;
+        const matchSearch = nama.includes(searchStr) || 
+                           noBadanStr.includes(searchStr) || 
+                           rowSearchText.includes(searchStr);
+        
+        if (!matchSearch) return false;
 
         // Filter by month/year
         const tarikh = r.tarikh;
