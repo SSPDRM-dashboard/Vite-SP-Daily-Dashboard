@@ -350,23 +350,23 @@ export default function CarianTab({ currentUser, currentToken, isFullAdmin }: an
             </div>
 
             {/* Info */}
-            <div className="grid grid-cols-2 gap-4 mb-2 print:mb-1 font-bold text-[10px]">
+            <div className="grid grid-cols-2 gap-4 mb-[48px] print:mb-[48px] font-bold text-[13px]">
               <div>
-                <div className="grid grid-cols-[100px_auto] mb-0.5">
+                <div className="grid grid-cols-[120px_auto] mb-0.5">
                   <div>PANGKAT / NO</div><div>: {pangkat} {noBadan}</div>
                 </div>
-                <div className="grid grid-cols-[100px_auto] mb-0.5">
+                <div className="grid grid-cols-[120px_auto] mb-0.5">
                   <div>NAMA</div><div>: {nama}</div>
                 </div>
-                <div className="grid grid-cols-[100px_auto] mb-2">
+                <div className="grid grid-cols-[120px_auto] mb-2">
                   <div>DAERAH</div><div>: {daerah.replace('BALAI POLIS ', '')}</div>
                 </div>
               </div>
               <div>
-                <div className="grid grid-cols-[140px_auto] mb-0.5">
+                <div className="grid grid-cols-[180px_auto] mb-0.5">
                   <div>NO. KAD PENGENALAN</div><div>: {profile?.ic || ''}</div>
                 </div>
-                <div className="grid grid-cols-[140px_auto]">
+                <div className="grid grid-cols-[180px_auto]">
                   <div>NAMA DAN NO.AKAUN BANK</div><div>: {profile?.bankName ? `${profile.bankName} ${profile.bankAccount}` : ''}</div>
                 </div>
               </div>
@@ -377,18 +377,18 @@ export default function CarianTab({ currentUser, currentToken, isFullAdmin }: an
               <thead className="text-[9px]">
                 <tr>
                   <th className="border border-black p-0.5 w-[30px]" rowSpan={2}>BIL</th>
-                  <th className="border border-black p-0.5 w-[90px]" rowSpan={2}>TARIKH</th>
-                  <th className="border border-black p-0.5 w-[160px]" colSpan={2}>MASA</th>
+                  <th className="border border-black p-0.5 w-[80px]" rowSpan={2}>TARIKH</th>
+                  <th className="border border-black p-0.5 w-[150px]" colSpan={2}>MASA</th>
                   <th className="border border-black p-0.5 whitespace-nowrap w-[210px]" rowSpan={2}>JENIS TUGAS</th>
-                  <th className="border border-black p-0.5 w-[45px]" rowSpan={2}>SD<br/>MASUK</th>
-                  <th className="border border-black p-0.5 w-[45px]" rowSpan={2}>SD<br/>KELUAR</th>
+                  <th className="border border-black p-0.5 w-[60px]" rowSpan={2}>SD<br/>MASUK</th>
+                  <th className="border border-black p-0.5 w-[60px]" rowSpan={2}>SD<br/>KELUAR</th>
                   <th className="border border-black p-0.5 w-[70px]" rowSpan={2}>JUMLAH<br/>JAM<br/>BERTUGAS</th>
-                  <th className="border border-black p-0.5 w-[75px]" rowSpan={2}>KADAR ELAUN<br/>SEJAM</th>
-                  <th className="border border-black p-0.5 w-[75px]" rowSpan={2}>ELAUN<br/>PENUGASAN</th>
+                  <th className="border border-black p-0.5 w-[70px]" rowSpan={2}>KADAR ELAUN<br/>SEJAM</th>
+                  <th className="border border-black p-0.5 w-[70px]" rowSpan={2}>ELAUN<br/>PENUGASAN</th>
                 </tr>
                 <tr>
-                  <th className="border border-black p-0.5 w-[80px]">MULA</th>
-                  <th className="border border-black p-0.5 w-[80px]">TAMAT</th>
+                  <th className="border border-black p-0.5 w-[75px]">MULA</th>
+                  <th className="border border-black p-0.5 w-[75px]">TAMAT</th>
                 </tr>
               </thead>
               <tbody>
