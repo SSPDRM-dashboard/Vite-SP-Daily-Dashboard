@@ -397,7 +397,7 @@ export default function CarianTab({ currentUser, currentToken, isFullAdmin }: an
                   
                   if (!r) {
                     return (
-                      <tr key={idx} className="h-[20px] print:h-[16px]">
+                      <tr key={idx} className="h-[20px] print:h-[20px] text-[12px]">
                         <td className="border border-black p-0.5"></td>
                         <td className="border border-black p-0.5"></td>
                         <td className="border border-black p-0.5"></td>
@@ -433,7 +433,7 @@ export default function CarianTab({ currentUser, currentToken, isFullAdmin }: an
                   const sdData = sdMap?.[normTarikh] || { masuk: '', keluar: '' };
 
                   return (
-                    <tr key={idx} className="h-[20px] print:h-[16px]">
+                    <tr key={idx} className="h-[20px] print:h-[20px] text-[12px]">
                       <td className="border border-black p-0.5">{idx + 1}</td>
                       <td className="border border-black p-0.5 font-bold">&nbsp;{tarikh}&nbsp;</td>
                       <td className="border border-black p-0.5 font-bold">{masaMula ? String(masaMula).replace(':', '') : ''}</td>
@@ -465,7 +465,7 @@ export default function CarianTab({ currentUser, currentToken, isFullAdmin }: an
             </table>
 
             {/* Signatures */}
-            <div className="grid grid-cols-3 gap-2 mt-4 print:mt-1 text-[10px]">
+            <div className="grid grid-cols-3 gap-2 mt-20 print:mt-20 text-[10px]">
               <div>
                 <br/>
                 Saya mengaku menjalankan penugasan/latihan<br/>
