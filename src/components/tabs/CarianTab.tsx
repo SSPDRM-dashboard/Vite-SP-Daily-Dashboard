@@ -376,19 +376,19 @@ export default function CarianTab({ currentUser, currentToken, isFullAdmin }: an
             <table className="w-full border-collapse border border-black text-[10px] text-center">
               <thead className="text-[9px]">
                 <tr>
-                  <th className="border border-black p-0.5" rowSpan={2}>BIL</th>
-                  <th className="border border-black p-0.5" rowSpan={2}>TARIKH</th>
+                  <th className="border border-black p-0.5 w-[30px]" rowSpan={2}>BIL</th>
+                  <th className="border border-black p-0.5 w-[90px]" rowSpan={2}>TARIKH</th>
                   <th className="border border-black p-0.5" colSpan={2}>MASA</th>
-                  <th className="border border-black p-0.5 whitespace-nowrap" rowSpan={2}>JENIS TUGAS</th>
-                  <th className="border border-black p-0.5 whitespace-nowrap w-[12%]" rowSpan={2}>SD MASUK</th>
-                  <th className="border border-black p-0.5 whitespace-nowrap w-[12%]" rowSpan={2}>SD KELUAR</th>
-                  <th className="border border-black p-0.5" rowSpan={2}>JUMLAH<br/>JAM<br/>BERTUGAS</th>
-                  <th className="border border-black p-0.5" rowSpan={2}>KADAR ELAUN<br/>SEJAM</th>
-                  <th className="border border-black p-0.5" rowSpan={2}>ELAUN<br/>PENUGASAN</th>
+                  <th className="border border-black p-0.5 whitespace-nowrap w-[210px]" rowSpan={2}>JENIS TUGAS</th>
+                  <th className="border border-black p-0.5 whitespace-nowrap w-[45px]" rowSpan={2}>SD MASUK</th>
+                  <th className="border border-black p-0.5 whitespace-nowrap w-[45px]" rowSpan={2}>SD KELUAR</th>
+                  <th className="border border-black p-0.5 w-[70px]" rowSpan={2}>JUMLAH<br/>JAM<br/>BERTUGAS</th>
+                  <th className="border border-black p-0.5 w-[75px]" rowSpan={2}>KADAR ELAUN<br/>SEJAM</th>
+                  <th className="border border-black p-0.5 w-[75px]" rowSpan={2}>ELAUN<br/>PENUGASAN</th>
                 </tr>
                 <tr>
-                  <th className="border border-black p-0.5">MULA</th>
-                  <th className="border border-black p-0.5">TAMAT</th>
+                  <th className="border border-black p-0.5 w-[80px]">MULA</th>
+                  <th className="border border-black p-0.5 w-[80px]">TAMAT</th>
                 </tr>
               </thead>
               <tbody>
@@ -397,7 +397,7 @@ export default function CarianTab({ currentUser, currentToken, isFullAdmin }: an
                   
                   if (!r) {
                     return (
-                      <tr key={idx} className="h-[20px] print:h-[20px] text-[12px]">
+                      <tr key={idx} className="h-[24px] print:h-[24px] text-[12px]">
                         <td className="border border-black p-0.5"></td>
                         <td className="border border-black p-0.5"></td>
                         <td className="border border-black p-0.5"></td>
@@ -433,7 +433,7 @@ export default function CarianTab({ currentUser, currentToken, isFullAdmin }: an
                   const sdData = sdMap?.[normTarikh] || { masuk: '', keluar: '' };
 
                   return (
-                    <tr key={idx} className="h-[20px] print:h-[20px] text-[12px]">
+                    <tr key={idx} className="h-[24px] print:h-[24px] text-[12px]">
                       <td className="border border-black p-0.5">{idx + 1}</td>
                       <td className="border border-black p-0.5 font-bold">&nbsp;{tarikh}&nbsp;</td>
                       <td className="border border-black p-0.5 font-bold">{masaMula ? String(masaMula).replace(':', '') : ''}</td>
@@ -465,7 +465,7 @@ export default function CarianTab({ currentUser, currentToken, isFullAdmin }: an
             </table>
 
             {/* Signatures */}
-            <div className="grid grid-cols-3 gap-2 mt-20 print:mt-20 text-[10px]">
+            <div className="grid grid-cols-3 gap-2 mt-[120px] print:mt-[120px] text-[10px]">
               <div>
                 <br/>
                 Saya mengaku menjalankan penugasan/latihan<br/>
