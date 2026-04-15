@@ -350,7 +350,7 @@ export default function CarianTab({ currentUser, currentToken, isFullAdmin }: an
             </div>
 
             {/* Info */}
-            <div className="grid grid-cols-2 gap-4 mb-[48px] print:mb-[48px] font-bold text-[13px]">
+            <div className="grid grid-cols-2 gap-4 mb-[24px] print:mb-[24px] font-bold text-[13px]">
               <div>
                 <div className="grid grid-cols-[120px_auto] mb-0.5">
                   <div>PANGKAT / NO</div><div>: {pangkat} {noBadan}</div>
