@@ -141,6 +141,7 @@ export default function SemuaDaerahTab({ data, dateStr, loading }: any) {
                 <th className="p-2.5 px-3 text-center text-xs font-bold text-slate-500 uppercase tracking-wider w-10">#</th>
                 <th className="p-2.5 px-2.5 text-xs font-bold text-slate-500 uppercase tracking-wider">Timestamp</th>
                 <th className="p-2.5 px-2.5 text-xs font-bold text-slate-500 uppercase tracking-wider">Daerah</th>
+                <th className="p-2.5 px-2.5 text-xs font-bold text-slate-500 uppercase tracking-wider">Pangkat</th>
                 <th className="p-2.5 px-2.5 text-xs font-bold text-slate-500 uppercase tracking-wider">Nama & No. Badan</th>
                 <th className="p-2.5 px-2.5 text-xs font-bold text-slate-500 uppercase tracking-wider">Balai Berdaftar</th>
                 <th className="p-2.5 px-2.5 text-xs font-bold text-slate-500 uppercase tracking-wider">Balai Bertugas</th>
@@ -153,14 +154,14 @@ export default function SemuaDaerahTab({ data, dateStr, loading }: any) {
             </thead>
             <tbody>
               {loading ? (
-                <tr><td colSpan={11} className="text-center p-8 text-slate-500">Memuatkan data...</td></tr>
+                <tr><td colSpan={12} className="text-center p-8 text-slate-500">Memuatkan data...</td></tr>
               ) : data.length === 0 ? (
-                <tr><td colSpan={11} className="text-center p-12 text-slate-500"><div className="text-4xl mb-3">📭</div><div className="font-medium">Tiada rekod penugasan untuk tarikh ini</div></td></tr>
+                <tr><td colSpan={12} className="text-center p-12 text-slate-500"><div className="text-4xl mb-3">📭</div><div className="font-medium">Tiada rekod penugasan untuk tarikh ini</div></td></tr>
               ) : (
                 Object.keys(groupedByDistrict).sort().map(district => (
                   <React.Fragment key={district}>
                     <tr className="bg-[#0a3fa8]">
-                      <td colSpan={11} className="p-2 px-3.5 text-yellow-400 font-bold text-sm tracking-wide">📍 {district} ({groupedByDistrict[district].length} anggota)</td>
+                      <td colSpan={12} className="p-2 px-3.5 text-yellow-400 font-bold text-sm tracking-wide">📍 {district} ({groupedByDistrict[district].length} anggota)</td>
                     </tr>
                     {groupedByDistrict[district].map((r, i) => {
                       const isDuplicate = data.filter((d: any) => 
@@ -173,6 +174,7 @@ export default function SemuaDaerahTab({ data, dateStr, loading }: any) {
                           <td className="p-2.5 px-3 text-center text-slate-500 text-[11px]">{i + 1}</td>
                           <td className="p-2.5 px-2.5 text-[11px]">{r.timestamp}</td>
                           <td className="p-2.5 px-2.5 font-bold text-[#003087]">{r.daerah}</td>
+                          <td className="p-2.5 px-2.5">{r.pangkat || '—'}</td>
                           <td className="p-2.5 px-2.5 font-bold">
                             {r.nama} {r.noBadan && !r.nama.includes(r.noBadan) ? `(${r.noBadan})` : ''}
                             {isDuplicate && <span className="ml-2 text-[9px] bg-red-600 text-white px-1 rounded font-bold uppercase">Bertindih</span>}

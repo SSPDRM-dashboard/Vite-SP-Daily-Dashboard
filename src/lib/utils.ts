@@ -188,10 +188,6 @@ export function expandRows(rows: any[]) {
     const masa = formatTime(row[17]);
     const jam = parseFloat(row[18]) || 0;
     
-    if (jenis === 'LAIN-LAIN TUGAS' && lain) {
-      jenis = lain;
-    }
-    
     let masaTamat = formatTime(row[23] || '');
     if (masa && masa !== '—' && jam > 0) {
       masaTamat = calculateEndTime(masa, jam);

@@ -10,6 +10,7 @@ export default function CarianTab({ currentUser, currentToken, isFullAdmin }: an
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [result, setResult] = useState<any>(null);
+  const [multipleResults, setMultipleResults] = useState<{ id: string, nama: string, pangkat: string, noBadan: string, rows: any[] }[] | null>(null);
 
   const years = Array.from({ length: 5 }, (_, i) => new Date().getFullYear() + 1 - i);
   const months = ['Januari', 'Februari', 'Mac', 'April', 'Mei', 'Jun', 'Julai', 'Ogos', 'September', 'Oktober', 'November', 'Disember'];
@@ -17,14 +18,16 @@ export default function CarianTab({ currentUser, currentToken, isFullAdmin }: an
   const doSearch = async () => {
     const searchNoBadan = noBadan.trim();
     if (!searchNoBadan) {
-      setError('⚠️ Sila masukkan nombor badan anggota');
+      setError('⚠️ Sila masukkan nombor badan anggota atau nama');
       setResult(null);
+      setMultipleResults(null);
       return;
     }
 
     setLoading(true);
     setError('');
     setResult(null);
+    setMultipleResults(null);
 
     try {
       if (!GOOGLE_SHEET_URL) {
@@ -80,14 +83,13 @@ export default function CarianTab({ currentUser, currentToken, isFullAdmin }: an
       });
 
       if (filteredBySearch.length === 0) {
-        setError(`❌ Tiada rekod ditemui untuk Nombor Badan "${noBadan}" bagi ${months[bulan - 1]} ${tahun}.`);
+        setError(`❌ Tiada rekod ditemui untuk "${noBadan}" bagi ${months[bulan - 1]} ${tahun}.`);
       } else {
         // Filter by unlocked district if not full admin
         let filteredRows = filteredBySearch;
         if (!isFullAdmin && currentUser?.district) {
           const dName: Record<string, string> = { d1: 'MELAKA TENGAH', d2: 'JASIN', d3: 'ALOR GAJAH', d4: 'IPK SSPDRM' };
           
-          // Handle potential multiple districts (e.g. "d1/d2")
           const userDistricts = String(currentUser.district).toLowerCase().split('/')
             .map(d => d.trim())
             .filter(d => dName[d]);
@@ -100,133 +102,169 @@ export default function CarianTab({ currentUser, currentToken, isFullAdmin }: an
               return allowedDaerahs.includes(rowDaerah);
             });
           } else {
-            filteredRows = []; // Tiada akses jika daerah tidak sah
+            filteredRows = []; 
           }
         } else if (!isFullAdmin) {
-          filteredRows = []; // Tiada akses jika bukan admin dan tiada daerah
+          filteredRows = []; 
         }
 
         if (filteredRows.length === 0) {
-          setError(`❌ Tiada rekod ditemui untuk Nombor Badan "${noBadan}" dalam daerah anda bagi ${months[bulan - 1]} ${tahun}.`);
+          setError(`❌ Tiada rekod ditemui untuk "${noBadan}" dalam daerah anda bagi ${months[bulan - 1]} ${tahun}.`);
         } else {
-          // Fetch SD CSV
-          let sdMap: Record<string, any> = {};
-          try {
-            const sdUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSF_znGU2n1ZszDgqtgsSe2VNVq9jYtQ4PjH1XUCJhUJafbhWKx_sWd_1NarbFlmW10qHs6wa-4h4qZ/pub?gid=1807711765&single=true&output=csv';
-            const sdResponse = await fetch(sdUrl);
-            if (sdResponse.ok) {
-              const sdText = await sdResponse.text();
-              const sdParsed = Papa.parse(sdText, { skipEmptyLines: true });
-              const sdRows = sdParsed.data as any[];
-              if (sdRows.length > 0) sdRows.shift(); // Remove header
-
-              // Extract the actual noBadan from the search input if it contains a name
-              let actualSearchNoBadan = searchNoBadan;
-              const numMatch = searchNoBadan.match(/\b\d+\b/);
-              if (numMatch) {
-                actualSearchNoBadan = numMatch[0];
-              }
-
-              for (const row of sdRows) {
-                const match = [3, 5, 7, 9].some(idx => {
-                  const cellStr = String(row[idx] || '').trim().toUpperCase();
-                  if (!cellStr) return false;
-                  // Extract the number at the end of the string
-                  const cellNumMatch = cellStr.match(/\b\d+\b/g);
-                  if (cellNumMatch) {
-                    return cellNumMatch.some(n => n === actualSearchNoBadan);
-                  }
-                  return cellStr.includes(actualSearchNoBadan.toUpperCase());
-                });
-                
-                if (match) {
-                  for (let i = 0; i < 6; i++) {
-                    const tIdx = 10 + i * 3;
-                    const mIdx = 11 + i * 3;
-                    const kIdx = 12 + i * 3;
-                    let tarikh = String(row[tIdx] || '').trim();
-                    if (tarikh) {
-                      tarikh = normaliseDate(tarikh);
-                      
-                      let masuk = String(row[mIdx] || '').trim();
-                      let keluar = String(row[kIdx] || '').trim();
-                      
-                      // Ensure 4 digits if it's a number
-                      if (/^\d+$/.test(masuk)) masuk = masuk.padStart(4, '0');
-                      if (/^\d+$/.test(keluar)) keluar = keluar.padStart(4, '0');
-                      
-                      sdMap[tarikh] = {
-                        masuk,
-                        keluar
-                      };
-                    }
-                  }
-                }
-              }
-              console.log("SD Map for", actualSearchNoBadan, ":", sdMap);
-            }
-          } catch (err) {
-            console.error("Error fetching SD data:", err);
+          // Group by unique person (No. Badan or Name)
+          const groupedData: Record<string, any[]> = {};
+          filteredRows.forEach((r: any) => {
+            const rawFoundNama = String(r.nama || '');
+            const cleanNama = rawFoundNama.replace(/[0-9()]/g, '').trim();
+            const foundNoBadan = String(r.noBadan || '').trim() || rawFoundNama.match(/([A-Z0-9/]{2,10}\d{3,7}|\b\d{4,7}\b)/i)?.[0] || '';
+            
+            const key = foundNoBadan ? foundNoBadan : cleanNama;
+            if (!groupedData[key]) groupedData[key] = [];
+            groupedData[key].push(r);
+          });
+          
+          const distinctKeys = Object.keys(groupedData);
+          
+          if (distinctKeys.length > 1) {
+            // We have multiple people!
+            const options = distinctKeys.map(k => {
+              const firstRow = groupedData[k][0];
+              const rawRowNama = String(firstRow.nama || '');
+              return {
+                id: k,
+                nama: rawRowNama.replace(/[0-9()]/g, '').trim() || k,
+                pangkat: firstRow.pangkat || '',
+                noBadan: String(firstRow.noBadan || '').trim() || rawRowNama.match(/([A-Z0-9/]{2,10}\d{3,7}|\b\d{4,7}\b)/i)?.[0] || k,
+                rows: groupedData[k]
+              };
+            });
+            setMultipleResults(options);
+          } else {
+            // Only 1 person found, load directly
+            await loadProfileAndSetResult(groupedData[distinctKeys[0]], searchNoBadan);
           }
-
-          // Fetch Bank/IC Info
-          let bankInfo = { ic: '', bankName: '', bankAccount: '' };
-          try {
-            const bankUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRk4XOvTBYKRNQn07ca_x6dGIqc6do04w28q9Okzcr2VdFv3UZl5q-_awQ88HhFp1Glm8yWhIKA-3Hp/pub?gid=761351772&single=true&output=csv';
-            const bankResponse = await fetch(bankUrl);
-            if (bankResponse.ok) {
-              const bankText = await bankResponse.text();
-              const bankParsed = Papa.parse(bankText, { skipEmptyLines: true });
-              const bankRows = bankParsed.data as any[];
-              if (bankRows.length > 0) bankRows.shift(); // Remove header
-
-              let actualSearchNoBadan = searchNoBadan;
-              const numMatch = searchNoBadan.match(/\b\d+\b/);
-              if (numMatch) {
-                actualSearchNoBadan = numMatch[0];
-              }
-
-              for (const row of bankRows) {
-                const match = [3, 5, 7, 9].some(idx => {
-                  const cellStr = String(row[idx] || '').trim().toUpperCase();
-                  if (!cellStr) return false;
-                  const cellNumMatch = cellStr.match(/\b\d+\b/g);
-                  if (cellNumMatch) {
-                    return cellNumMatch.some(n => n === actualSearchNoBadan);
-                  }
-                  return cellStr.includes(actualSearchNoBadan.toUpperCase());
-                });
-
-                if (match) {
-                  bankInfo.ic = String(row[15] || '').trim();
-                  bankInfo.bankName = String(row[21] || '').trim();
-                  bankInfo.bankAccount = String(row[22] || '').trim();
-                  break;
-                }
-              }
-            }
-          } catch (err) {
-            console.error("Error fetching Bank/IC data:", err);
-          }
-
-          // Profile data from the first row
-          const firstRow = filteredRows[0];
-          const profile = {
-            nama: firstRow.nama || '',
-            pangkat: firstRow.pangkat || '',
-            daerah: firstRow.daerah || '',
-            balai: firstRow.balai || '',
-            jantina: firstRow.jantina || '',
-            ic: bankInfo.ic,
-            bankName: bankInfo.bankName,
-            bankAccount: bankInfo.bankAccount
-          };
-          setResult({ rows: filteredRows, profile, sdMap });
         }
       }
     } catch (e) {
       console.error("Error searching:", e);
       setError('❌ Ralat rangkaian. Sila cuba lagi.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const loadProfileAndSetResult = async (userRows: any[], originalSearchText: string) => {
+    setLoading(true);
+    try {
+      const firstRow = userRows[0];
+      const rawFoundNama = String(firstRow.nama || '');
+      const foundNoBadan = String(firstRow.noBadan || '').trim() || rawFoundNama.match(/([A-Z0-9/]{2,10}\d{3,7}|\b\d{4,7}\b)/i)?.[0] || '';
+      
+      let actualSearchNoBadan = originalSearchText;
+      if (foundNoBadan) {
+        actualSearchNoBadan = foundNoBadan;
+        const numMatch = foundNoBadan.match(/\b\d+\b/);
+        if (numMatch) {
+          actualSearchNoBadan = numMatch[0];
+        }
+      } else {
+        const numMatch = originalSearchText.match(/\b\d+\b/);
+        if (numMatch) {
+          actualSearchNoBadan = numMatch[0];
+        }
+      }
+
+      // Fetch SD CSV
+      let sdMap: Record<string, any> = {};
+      try {
+        const sdUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSF_znGU2n1ZszDgqtgsSe2VNVq9jYtQ4PjH1XUCJhUJafbhWKx_sWd_1NarbFlmW10qHs6wa-4h4qZ/pub?gid=1807711765&single=true&output=csv';
+        const sdResponse = await fetch(sdUrl);
+        if (sdResponse.ok) {
+          const sdText = await sdResponse.text();
+          const sdParsed = Papa.parse(sdText, { skipEmptyLines: true });
+          const sdRows = sdParsed.data as any[];
+          if (sdRows.length > 0) sdRows.shift(); 
+
+          for (const row of sdRows) {
+            const match = [3, 5, 7, 9].some(idx => {
+              const cellStr = String(row[idx] || '').trim().toUpperCase();
+              if (!cellStr) return false;
+              const cellNumMatch = cellStr.match(/\b\d+\b/g);
+              if (cellNumMatch) {
+                return cellNumMatch.some(n => n === actualSearchNoBadan);
+              }
+              return cellStr.includes(actualSearchNoBadan.toUpperCase());
+            });
+            
+            if (match) {
+              for (let i = 0; i < 6; i++) {
+                const tIdx = 10 + i * 3;
+                const mIdx = 11 + i * 3;
+                const kIdx = 12 + i * 3;
+                let tarikh = String(row[tIdx] || '').trim();
+                if (tarikh) {
+                  tarikh = normaliseDate(tarikh);
+                  let masuk = String(row[mIdx] || '').trim();
+                  let keluar = String(row[kIdx] || '').trim();
+                  if (/^\d+$/.test(masuk)) masuk = masuk.padStart(4, '0');
+                  if (/^\d+$/.test(keluar)) keluar = keluar.padStart(4, '0');
+                  sdMap[tarikh] = { masuk, keluar };
+                }
+              }
+            }
+          }
+        }
+      } catch (err) {
+        console.error("Error fetching SD data:", err);
+      }
+
+      // Fetch Bank/IC Info
+      let bankInfo = { ic: '', bankName: '', bankAccount: '' };
+      try {
+        const bankUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRk4XOvTBYKRNQn07ca_x6dGIqc6do04w28q9Okzcr2VdFv3UZl5q-_awQ88HhFp1Glm8yWhIKA-3Hp/pub?gid=761351772&single=true&output=csv';
+        const bankResponse = await fetch(bankUrl);
+        if (bankResponse.ok) {
+          const bankText = await bankResponse.text();
+          const bankParsed = Papa.parse(bankText, { skipEmptyLines: true });
+          const bankRows = bankParsed.data as any[];
+          if (bankRows.length > 0) bankRows.shift();
+
+          for (const row of bankRows) {
+            const match = [3, 5, 7, 9].some(idx => {
+              const cellStr = String(row[idx] || '').trim().toUpperCase();
+              if (!cellStr) return false;
+              const cellNumMatch = cellStr.match(/\b\d+\b/g);
+              if (cellNumMatch) {
+                return cellNumMatch.some(n => n === actualSearchNoBadan);
+              }
+              return cellStr.includes(actualSearchNoBadan.toUpperCase());
+            });
+
+            if (match) {
+              bankInfo.ic = String(row[15] || '').trim();
+              bankInfo.bankName = String(row[21] || '').trim();
+              bankInfo.bankAccount = String(row[22] || '').trim();
+              break;
+            }
+          }
+        }
+      } catch (err) {
+        console.error("Error fetching Bank/IC data:", err);
+      }
+
+      const profile = {
+        nama: rawFoundNama || '',
+        pangkat: firstRow.pangkat || '',
+        daerah: firstRow.daerah || '',
+        balai: firstRow.balai || '',
+        jantina: firstRow.jantina || '',
+        ic: bankInfo.ic,
+        bankName: bankInfo.bankName,
+        bankAccount: bankInfo.bankAccount
+      };
+      
+      setMultipleResults(null);
+      setResult({ rows: userRows, profile, sdMap });
     } finally {
       setLoading(false);
     }
@@ -242,6 +280,9 @@ export default function CarianTab({ currentUser, currentToken, isFullAdmin }: an
     const daerah = profile.daerah || rows.map((r: any) => r.daerah).find((v: any) => v) || '—';
     const balai = profile.balai || rows.map((r: any) => r.balai).find((v: any) => v) || '—';
     const jantina = profile.jantina || rows.map((r: any) => r.jantina).find((v: any) => v) || '—';
+    
+    // Attempt to extract the actual noBadan from the data row, falling back to a regex match on rawNama if undefined, ignoring the original search input state
+    const actualPrintNoBadan = rows.map((r: any) => r.noBadan).find((v: any) => v) || rawNama.match(/([A-Z0-9/]{2,10}\d{3,7}|\b\d{4,7}\b)/i)?.[0] || '';
 
     const daysInMonth = new Date(tahun, bulan, 0).getDate();
     const dayMap: Record<number, any[]> = {};
@@ -290,7 +331,7 @@ export default function CarianTab({ currentUser, currentToken, isFullAdmin }: an
           <div className="grid grid-cols-2 md:grid-cols-4">
             <div className="p-4 border-r border-b border-slate-200">
               <div className="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">Nombor Badan</div>
-              <div className="font-bold text-xl text-[#003087]">{noBadan}</div>
+              <div className="font-bold text-xl text-[#003087]">{actualPrintNoBadan || '—'}</div>
             </div>
             <div className="p-4 border-r border-b border-slate-200">
               <div className="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">Nama</div>
@@ -353,7 +394,7 @@ export default function CarianTab({ currentUser, currentToken, isFullAdmin }: an
             <div className="grid grid-cols-2 gap-4 mb-[24px] print:mb-[24px] font-bold text-[13px]">
               <div>
                 <div className="grid grid-cols-[120px_auto] mb-0.5">
-                  <div>PANGKAT / NO</div><div>: {pangkat} {noBadan}</div>
+                  <div>PANGKAT / NO</div><div>: {pangkat} {actualPrintNoBadan}</div>
                 </div>
                 <div className="grid grid-cols-[120px_auto] mb-0.5">
                   <div>NAMA</div><div>: {nama}</div>
@@ -539,10 +580,10 @@ export default function CarianTab({ currentUser, currentToken, isFullAdmin }: an
           className="grid grid-cols-1 md:grid-cols-[auto_160px_160px_1fr_auto] gap-4 items-end"
         >
               <div>
-                <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Nombor Badan</label>
+                <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">No. Badan / Nama</label>
                 <input 
                   type="text" 
-                  className="border-2 border-red-600 rounded-lg p-2.5 px-3.5 text-sm font-bold outline-none w-full md:w-36 text-slate-900 bg-red-50 focus:border-red-700"
+                  className="border-2 border-red-600 rounded-lg p-2.5 px-3.5 text-sm font-bold outline-none w-full md:w-56 text-slate-900 bg-red-50 focus:border-red-700 placeholder:font-normal placeholder:text-red-300"
                   value={noBadan}
                   onChange={e => setNoBadan(e.target.value)}
                 />
@@ -593,10 +634,39 @@ export default function CarianTab({ currentUser, currentToken, isFullAdmin }: an
             </div>
           )}
 
-          {!result && !error && !loading && (
+          {multipleResults && multipleResults.length > 0 && !loading && (
+            <div className="bg-white rounded-xl border border-blue-200 p-6 shadow-sm print:hidden">
+              <h3 className="font-bold text-lg text-[#001f5c] mb-4 flex items-center gap-2">
+                👥 Terdapat lebih daripada satu anggota dijumpai
+              </h3>
+              <p className="text-sm text-slate-500 mb-5">
+                Sila pilih anggota yang betul dari senarai di bawah untuk paparan borang:
+              </p>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                {multipleResults.map((opt, i) => (
+                  <button
+                    key={i}
+                    onClick={() => loadProfileAndSetResult(opt.rows, noBadan)}
+                    className="flex flex-col text-left p-4 rounded-xl border-2 border-slate-200 hover:border-blue-500 hover:bg-blue-50 transition-all cursor-pointer bg-white group"
+                  >
+                    <div className="font-bold text-[#001f5c] group-hover:text-blue-700 text-[15px] mb-1">
+                      {opt.nama}
+                    </div>
+                    <div className="flex items-center gap-2 text-xs font-semibold text-slate-600">
+                      <span className="bg-yellow-100 text-yellow-800 px-2 py-0.5 rounded">ID: {opt.noBadan}</span>
+                      {opt.pangkat && <span className="bg-slate-100 text-slate-700 px-2 py-0.5 rounded">{opt.pangkat}</span>}
+                      <span className="text-slate-400">({opt.rows.length} rekod)</span>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {!result && !error && !loading && !multipleResults && (
             <div className="text-center p-12 text-slate-500">
               <div className="text-4xl mb-3">🔍</div>
-              <div className="font-semibold text-[15px]">Masukkan Nombor Badan untuk mencari rekod penugasan.</div>
+              <div className="font-semibold text-[15px]">Masukkan Nombor Badan atau Nama untuk mencari rekod penugasan.</div>
             </div>
           )}
 
