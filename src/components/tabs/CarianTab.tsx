@@ -347,11 +347,7 @@ export default function CarianTab({ currentUser, currentToken, isFullAdmin }: an
             </div>
             <div className="p-4 border-r border-slate-200">
               <div className="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">Daerah</div>
-              <div className="font-semibold text-sm text-slate-900">{daerah.replace('BALAI POLIS ', '')}</div>
-            </div>
-            <div className="p-4 border-r border-slate-200">
-              <div className="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">Balai Berdaftar</div>
-              <div className="font-semibold text-sm text-slate-900">{balai.replace('BALAI POLIS ', '')}</div>
+              <div className="font-semibold text-sm text-slate-900">{daerah}</div>
             </div>
             <div className="p-4 border-r border-slate-200">
               <div className="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">Kekerapan Bertugas</div>
@@ -400,7 +396,7 @@ export default function CarianTab({ currentUser, currentToken, isFullAdmin }: an
                   <div>NAMA</div><div>: {nama}</div>
                 </div>
                 <div className="grid grid-cols-[120px_auto] mb-2">
-                  <div>DAERAH</div><div>: {daerah.replace('BALAI POLIS ', '')}</div>
+                  <div>DAERAH</div><div>: {daerah}</div>
                 </div>
               </div>
               <div>
@@ -479,7 +475,15 @@ export default function CarianTab({ currentUser, currentToken, isFullAdmin }: an
                       <td className="border border-black p-0.5 font-bold">&nbsp;{tarikh}&nbsp;</td>
                       <td className="border border-black p-0.5 font-bold">{masaMula ? String(masaMula).replace(':', '') : ''}</td>
                       <td className="border border-black p-0.5 font-bold">{masaTamat}</td>
-                      <td className="border border-black p-0.5 font-bold uppercase whitespace-nowrap">&nbsp;{jenisTugas}&nbsp;</td>
+                      <td className="border border-black p-0.5 font-bold uppercase whitespace-nowrap text-[9px]">
+                        &nbsp;{jenisTugas}
+                        {r.lain && (
+                          <span className="ml-1 inline-block px-1.5 py-0.5 rounded border border-blue-200 bg-blue-50 text-blue-900 font-bold" style={{ fontSize: '8px' }}>
+                            {r.lain}
+                          </span>
+                        )}
+                        &nbsp;
+                      </td>
                       <td className="border border-black p-0.5 font-bold">{sdData.masuk}</td>
                       <td className="border border-black p-0.5 font-bold">{sdData.keluar}</td>
                       <td className="border border-black p-0.5 font-bold">{jam}</td>

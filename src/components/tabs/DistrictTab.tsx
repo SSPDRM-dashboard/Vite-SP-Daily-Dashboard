@@ -111,7 +111,6 @@ export default function DistrictTab({
                   <th className="p-2.5 px-2.5 text-xs font-bold text-slate-500 uppercase tracking-wider">Timestamp</th>
                   <th className="p-2.5 px-2.5 text-xs font-bold text-slate-500 uppercase tracking-wider">Pangkat</th>
                   <th className="p-2.5 px-2.5 text-xs font-bold text-slate-500 uppercase tracking-wider">Nama & No. Badan</th>
-                  <th className="p-2.5 px-2.5 text-xs font-bold text-slate-500 uppercase tracking-wider">Balai Berdaftar</th>
                   <th className="p-2.5 px-2.5 text-xs font-bold text-slate-500 uppercase tracking-wider">Balai Bertugas</th>
                   <th className="p-2.5 px-2.5 text-xs font-bold text-slate-500 uppercase tracking-wider">Jenis Tugasan</th>
                   <th className="p-2.5 px-2.5 text-xs font-bold text-slate-500 uppercase tracking-wider">Lain-lain Tugas</th>
@@ -141,10 +140,15 @@ export default function DistrictTab({
                           {r.nama} {r.noBadan && !r.nama.includes(r.noBadan) ? `(${r.noBadan})` : ''}
                           {isDuplicate && <span className="ml-2 text-[9px] bg-red-600 text-white px-1 rounded font-bold uppercase">Bertindih</span>}
                         </td>
-                        <td className="p-2.5 px-2.5">{r.balai.replace('BALAI POLIS ', '')}</td>
-                        <td className="p-2.5 px-2.5">{r.bertugas.replace('BALAI POLIS ', '')}</td>
+                        <td className="p-2.5 px-2.5">{r.bertugas}</td>
                         <td className="p-2.5 px-2.5"><span className={`inline-block px-2.5 py-1 rounded-full text-[11px] font-semibold whitespace-nowrap ${badgeClass(r.jenis)}`}>{r.jenis || '—'}</span></td>
-                        <td className="p-2.5 px-2.5 max-w-[200px] break-words">{r.lain || '—'}</td>
+                        <td className="p-2.5 px-2.5 max-w-[200px] break-words">
+                          {r.lain ? (
+                            <span className="inline-block px-2 py-0.5 rounded-md bg-blue-100 text-blue-800 text-[10px] font-bold uppercase">
+                              {r.lain}
+                            </span>
+                          ) : '—'}
+                        </td>
                         <td className="p-2.5 px-2.5 text-center font-semibold">{r.jam || '—'}</td>
                         <td className="p-2.5 px-2.5 text-center">{r.masa || '—'}</td>
                         <td className="p-2.5 px-2.5 text-center">{r.masaTamat || '—'}</td>
