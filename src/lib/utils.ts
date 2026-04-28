@@ -185,6 +185,7 @@ export function expandRows(rows: any[]) {
     
     let jenis = normalizeJenis(String(row[16] || '').trim());
     const lain = String(row[19] || '').trim();
+    const colY = String(row[24] || '').trim();
     const masa = formatTime(row[17]);
     const jam = parseFloat(row[18]) || 0;
     
@@ -246,6 +247,7 @@ export function expandRows(rows: any[]) {
           masaTamat, 
           tarikh, 
           lain,
+          colY,
           noBadan,
           rowSearchText // Add this for easier searching in CarianTab
         });

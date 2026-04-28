@@ -452,7 +452,12 @@ export default function CarianTab({ currentUser, currentToken, isFullAdmin }: an
                   const tarikh = r.tarikh;
                   const masaMula = r.masa;
                   const jam = r.jam || 0;
-                  const jenisTugas = r.jenis;
+                  let jenisTugas = r.jenis;
+                  if (jenisTugas && jenisTugas.toUpperCase().includes('TUGAS PENTADBIRAN') && r.colY) {
+                    jenisTugas = `${jenisTugas} / ${r.colY}`;
+                  } else if (jenisTugas && jenisTugas.toUpperCase().includes('LAIN-LAIN TUGAS') && r.lain) {
+                    jenisTugas = r.lain;
+                  }
                   
                   let masaTamat = '';
                   if (masaMula && masaMula !== '—' && jam) {
@@ -476,13 +481,7 @@ export default function CarianTab({ currentUser, currentToken, isFullAdmin }: an
                       <td className="border border-black p-0.5 font-bold">{masaMula ? String(masaMula).replace(':', '') : ''}</td>
                       <td className="border border-black p-0.5 font-bold">{masaTamat}</td>
                       <td className="border border-black p-0.5 font-bold uppercase whitespace-nowrap text-[9px]">
-                        &nbsp;{jenisTugas}
-                        {r.lain && (
-                          <span className="ml-1 inline-block px-1.5 py-0.5 rounded border border-blue-200 bg-blue-50 text-blue-900 font-bold" style={{ fontSize: '8px' }}>
-                            {r.lain}
-                          </span>
-                        )}
-                        &nbsp;
+                        &nbsp;{jenisTugas}&nbsp;
                       </td>
                       <td className="border border-black p-0.5 font-bold">{sdData.masuk}</td>
                       <td className="border border-black p-0.5 font-bold">{sdData.keluar}</td>

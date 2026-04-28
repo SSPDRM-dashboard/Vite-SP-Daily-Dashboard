@@ -143,9 +143,9 @@ export default function DistrictTab({
                         <td className="p-2.5 px-2.5">{r.bertugas}</td>
                         <td className="p-2.5 px-2.5"><span className={`inline-block px-2.5 py-1 rounded-full text-[11px] font-semibold whitespace-nowrap ${badgeClass(r.jenis)}`}>{r.jenis || '—'}</span></td>
                         <td className="p-2.5 px-2.5 max-w-[200px] break-words">
-                          {r.lain ? (
+                          {(r.lain || r.colY) ? (
                             <span className="inline-block px-2 py-0.5 rounded-md bg-blue-100 text-blue-800 text-[10px] font-bold uppercase">
-                              {r.lain}
+                              {[r.lain, r.colY].filter(Boolean).join(' / ')}
                             </span>
                           ) : '—'}
                         </td>

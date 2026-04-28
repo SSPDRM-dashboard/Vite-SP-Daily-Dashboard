@@ -8,6 +8,7 @@ import DistrictTab from './tabs/DistrictTab';
 import LogTab from './tabs/LogTab';
 import CarianTab from './tabs/CarianTab';
 import RosterTab from './tabs/RosterTab';
+import DuplicateDutyTab from './tabs/DuplicateDutyTab';
 import AdminTab from './tabs/AdminTab';
 import { auth, db } from '../firebase';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
@@ -38,7 +39,7 @@ export default function Dashboard({ currentUser, currentToken, onLogout }: any) 
 
   const allowedDistricts = useMemo(() => {
     if (isAdmin) {
-      return ['today', 'd1', 'd2', 'd3', 'd4', 'log', 'carian', 'roster', 'admin'];
+      return ['today', 'd1', 'd2', 'd3', 'd4', 'log', 'carian', 'roster', 'duplicate', 'admin'];
     }
     
     const d = (currentUser?.district || '').trim().toLowerCase();
@@ -310,6 +311,9 @@ export default function Dashboard({ currentUser, currentToken, onLogout }: any) 
                 currentUser={currentUser} 
                 isFullAdmin={isAdmin}
               />
+            )}
+            {activeTab === 'duplicate' && (
+              <DuplicateDutyTab allData={allData} />
             )}
             {activeTab === 'admin' && (
               <AdminTab />
