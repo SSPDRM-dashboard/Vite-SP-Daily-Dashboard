@@ -17,7 +17,24 @@ import Papa from 'papaparse';
 import { Lock, ShieldCheck, Loader2 } from 'lucide-react';
 
 export default function Dashboard({ currentUser, currentToken, onLogout }: any) {
-  const [activeTab, setActiveTab] = useState('today');
+  const [activeTab, setActiveTab] = useState(() => {
+    if (currentUser?.allowedDistricts?.length > 0) {
+      if (currentUser.allowedDistricts.includes('today')) return 'today';
+      return currentUser.allowedDistricts[0];
+    }
+    return 'today';
+  });
+
+  // Ensure activeTab is valid if currentUser's permissions change
+  useEffect(() => {
+    if (currentUser?.allowedDistricts && !currentUser.allowedDistricts.includes(activeTab)) {
+      if (currentUser.allowedDistricts.includes('today')) {
+        setActiveTab('today');
+      } else if (currentUser.allowedDistricts.length > 0) {
+        setActiveTab(currentUser.allowedDistricts[0]);
+      }
+    }
+  }, [currentUser?.allowedDistricts, activeTab]);
   const [selectedDate, setSelectedDate] = useState(() => {
     const n = new Date();
     return `${n.getFullYear()}-${String(n.getMonth() + 1).padStart(2, '0')}-${String(n.getDate()).padStart(2, '0')}`;
