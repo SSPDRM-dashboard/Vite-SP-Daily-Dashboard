@@ -233,6 +233,7 @@ export function expandRows(rows: any[]) {
 
         out.push({ 
           id: `${timestamp}-${rowIdx}-${slotIdx}`,
+          sheetRow: rowIdx + 2, // Map to Google Sheet row (header is 1)
           timestamp, 
           daerah, 
           balai: balaiVal || '—', 

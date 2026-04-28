@@ -97,7 +97,6 @@ export default function DuplicateDutyTab({ allData }: Props) {
                 <div key={group.key} className="border border-red-200 rounded-lg overflow-hidden shrink-0">
                   <div className="bg-red-50 p-2.5 px-4 flex items-center justify-between border-b border-red-200 shrink-0">
                     <div className="flex items-center gap-3">
-                      <span className="bg-white px-2.5 py-1 rounded-md text-red-800 font-bold text-xs border border-red-200 shadow-sm">{group.date}</span>
                       <span className="font-bold text-slate-800">{group.name}</span>
                     </div>
                     <span className="bg-red-600 text-white px-2 py-0.5 rounded text-[10px] font-bold tracking-wide">{group.items.length} REKOD</span>
@@ -107,10 +106,12 @@ export default function DuplicateDutyTab({ allData }: Props) {
                       <thead>
                         <tr className="bg-slate-50 font-semibold text-[10px] uppercase tracking-wider text-slate-500">
                           <th className="p-2.5 px-4 font-semibold w-12 text-center">BIL</th>
+                          <th className="p-2.5 px-4 font-semibold w-24 border-l border-slate-100 text-center">RAW SHEET</th>
                           <th className="p-2.5 px-4 font-semibold w-32 border-l border-slate-100">TIMESTAMP</th>
                           <th className="p-2.5 px-4 font-semibold border-l border-slate-100">DAERAH</th>
                           <th className="p-2.5 px-4 font-semibold border-l border-slate-100">LOKASI</th>
                           <th className="p-2.5 px-4 font-semibold border-l border-slate-100">JENIS TUGAS</th>
+                          <th className="p-2.5 px-4 font-semibold border-l border-slate-100 whitespace-nowrap">TARIKH BERTUGAS</th>
                           <th className="p-2.5 px-4 font-semibold w-24 text-center border-l border-slate-100">JAM</th>
                         </tr>
                       </thead>
@@ -118,10 +119,12 @@ export default function DuplicateDutyTab({ allData }: Props) {
                         {group.items.map((item, idx) => (
                           <tr key={idx} className="border-t border-slate-100 hover:bg-slate-50 transition-colors">
                             <td className="p-2.5 px-4 text-center text-slate-400 font-medium">{idx + 1}</td>
+                            <td className="p-2.5 px-4 border-l border-slate-100 text-center text-slate-500 whitespace-nowrap font-mono bg-yellow-50">{item.sheetRow ? `Row ${item.sheetRow}` : '—'}</td>
                             <td className="p-2.5 px-4 border-l border-slate-100 text-slate-500 whitespace-nowrap">{item.timestamp || '—'}</td>
                             <td className="p-2.5 px-4 border-l border-slate-100 font-bold text-slate-700 whitespace-nowrap">{item.daerah || '—'}</td>
                             <td className="p-2.5 px-4 border-l border-slate-100 text-slate-600 truncate max-w-[200px]">{item.bertugas || '—'}</td>
                             <td className="p-2.5 px-4 border-l border-slate-100 text-slate-600">{item.jenis || '—'} {item.lain ? `/ ${item.lain}` : ''} {item.colY ? `/ ${item.colY}` : ''}</td>
+                            <td className="p-2.5 px-4 border-l border-slate-100 font-bold text-[#003087] whitespace-nowrap">{item.tarikh || '—'}</td>
                             <td className="p-2.5 px-4 border-l border-slate-100 text-center font-bold text-slate-600">{item.jam || '—'}</td>
                           </tr>
                         ))}
