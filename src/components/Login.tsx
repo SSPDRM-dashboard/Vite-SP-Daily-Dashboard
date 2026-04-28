@@ -67,7 +67,7 @@ export default function Login({ onLogin }: { onLogin: (user: any, token: string,
         } else {
           // Log keluar pengguna kerana dokumen mereka telah dipadam oleh admin
           await auth.signOut();
-          setError('❌ Akaun anda telah dipadam atau dinyahaktifkan oleh Pentadbir.');
+          setError('❌ Nama pengguna atau token tidak sah.');
         }
       }
     } catch (e: any) {
