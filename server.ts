@@ -34,6 +34,23 @@ async function startServer() {
     res.json({ ok: true });
   });
 
+  // Proxy endpoint for Google Sheet data
+  app.get('/api/sheet-data', async (req, res) => {
+    try {
+      const response = await fetch(GOOGLE_SHEET_URL);
+      if (!response.ok) {
+        throw new Error(`Google Sheet fetch failed: ${response.status}`);
+      }
+      const data = await response.text();
+      // Set content type to text/plain or text/csv
+      res.setHeader('Content-Type', 'text/csv');
+      res.send(data);
+    } catch (error: any) {
+      console.error('Error fetching sheet data:', error);
+      res.status(500).json({ error: 'Gagal mengambil data dari Google Sheet', details: error.message });
+    }
+  });
+
   app.get('/api/login', (req, res) => {
     const { username, token } = req.query;
     const user = db.users.find(u => u.username === username && u.token === token);
