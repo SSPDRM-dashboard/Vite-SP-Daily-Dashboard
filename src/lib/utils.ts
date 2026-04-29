@@ -75,7 +75,7 @@ export function normalizeJenis(j: string) {
     { keys: ['SENTRI', 'PROWLER'], val: 'SENTRI / PROWLER' },
     { keys: ['BIT', 'RONDAAN'], val: 'BIT/RONDAAN' },
     { keys: ['PENTADBIRAN', 'ADMIN'], val: 'TUGAS PENTADBIRAN' },
-    { keys: ['PERJUMPAAN/MESYUARAT', 'PERJUMPAAN', 'MESYUARAT'], val: 'PERJUMPAAN/MESYUARAT' },
+    { keys: ['PERJUMPAAN/MESYUARAT', 'MESYUARAT / PERJUMPAAN', 'PERJUMPAAN', 'MESYUARAT'], val: 'MESYUARAT / PERJUMPAAN' },
   ];
   for (const c of checks) { if (c.keys.some(k => u.includes(k))) return c.val; }
   return 'LAIN-LAIN TUGAS';
@@ -186,12 +186,15 @@ export function expandRows(rows: any[]) {
     else if (timestamp) tarikh = normaliseDate(timestamp);
     
     let jenis = normalizeJenis(String(row[16] || '').trim());
-    const lain = String(row[19] || '').trim();
+    let lain = String(row[19] || '').trim();
     let colY = String(row[24] || '').trim();
     
-    if (jenis === 'PERJUMPAAN/MESYUARAT' && colY) {
+    if ((jenis.includes('MESYUARAT') || jenis.includes('PERJUMPAAN')) && colY) {
       jenis = `${jenis} - ${colY}`;
       colY = ''; // Clear it so it doesn't get printed again in the UI
+    } else if ((lain.includes('MESYUARAT') || lain.includes('PERJUMPAAN')) && colY) {
+      lain = `${lain} - ${colY}`;
+      colY = '';
     }
 
     const masa = formatTime(row[17]);
