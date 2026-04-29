@@ -75,6 +75,7 @@ export function normalizeJenis(j: string) {
     { keys: ['SENTRI', 'PROWLER'], val: 'SENTRI / PROWLER' },
     { keys: ['BIT', 'RONDAAN'], val: 'BIT/RONDAAN' },
     { keys: ['PENTADBIRAN', 'ADMIN'], val: 'TUGAS PENTADBIRAN' },
+    { keys: ['PERJUMPAAN/MESYUARAT', 'PERJUMPAAN', 'MESYUARAT'], val: 'PERJUMPAAN/MESYUARAT' },
   ];
   for (const c of checks) { if (c.keys.some(k => u.includes(k))) return c.val; }
   return 'LAIN-LAIN TUGAS';
@@ -91,6 +92,7 @@ export function badgeClass(j: string) {
   if (u.includes('SENTRI') || u.includes('PROWLER')) return 'bg-yellow-100 text-yellow-800';
   if (u.includes('BIT') || u.includes('RONDAAN')) return 'bg-blue-100 text-blue-800';
   if (u.includes('PENTADBIRAN')) return 'bg-pink-100 text-pink-800';
+  if (u.includes('PERJUMPAAN') || u.includes('MESYUARAT')) return 'bg-purple-100 text-purple-800';
   return 'bg-blue-100 text-blue-800';
 }
 
@@ -185,7 +187,13 @@ export function expandRows(rows: any[]) {
     
     let jenis = normalizeJenis(String(row[16] || '').trim());
     const lain = String(row[19] || '').trim();
-    const colY = String(row[24] || '').trim();
+    let colY = String(row[24] || '').trim();
+    
+    if (jenis === 'PERJUMPAAN/MESYUARAT' && colY) {
+      jenis = `${jenis} - ${colY}`;
+      colY = ''; // Clear it so it doesn't get printed again in the UI
+    }
+
     const masa = formatTime(row[17]);
     const jam = parseFloat(row[18]) || 0;
     
