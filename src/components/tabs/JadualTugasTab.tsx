@@ -411,7 +411,7 @@ export default function JadualTugasTab({ currentUser, isFullAdmin }: any) {
                             key={`jenis-${day}`} 
                             className={`border border-black p-1 text-[9px] leading-[1.2] font-bold ${isWeekend(day) ? 'bg-blue-300' : ''}`}
                           >
-                            <div className="break-all whitespace-normal">{dayData?.jenis ? dayData.jenis.toUpperCase() : ''}</div>
+                            <div className="break-words whitespace-pre-line">{dayData?.jenis ? dayData.jenis.toUpperCase().replace('TUGAS PENTADBIRAN', 'TUGAS\nPENTADBIRAN') : ''}</div>
                           </td>
                         );
                       })}

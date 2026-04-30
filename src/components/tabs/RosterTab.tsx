@@ -402,7 +402,7 @@ export default function RosterTab({ currentUser, isFullAdmin }: any) {
                             key={`jenis-${day}`} 
                             className={`border border-black p-0.5 text-[7px] leading-[1.1] font-bold w-[26px] min-w-[26px] max-w-[26px] ${isWeekend(day) ? 'bg-blue-300' : ''}`}
                           >
-                            <div className="break-all whitespace-normal">{dayData?.jenis ? dayData.jenis.toUpperCase() : ''}</div>
+                            <div className="break-words whitespace-pre-line">{dayData?.jenis ? dayData.jenis.toUpperCase().replace('TUGAS PENTADBIRAN', 'TUGAS\nPENTADBIRAN') : ''}</div>
                           </td>
                         );
                       })}
