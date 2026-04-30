@@ -1,5 +1,5 @@
 export default function Tabs({ activeTab, setActiveTab, allowedDistricts, selectedDate, setSelectedDate }: any) {
-  const adminTabIds = ['carian', 'roster', 'duplicate', 'admin', 'log'];
+  const adminTabIds = ['carian', 'roster', 'jadual', 'duplicate', 'admin', 'log'];
   const daerahTabIds = ['today', 'd1', 'd2', 'd3', 'd4'];
 
   const allTabs = [
@@ -10,6 +10,7 @@ export default function Tabs({ activeTab, setActiveTab, allowedDistricts, select
     { id: 'd4', label: '🟣 IPK SSPDRM', colorClass: 'hover:text-purple-700 active-tab-d4' },
     { id: 'carian', label: '🔍 Main Hour', colorClass: 'hover:text-[#003087] active-tab-all' },
     { id: 'roster', label: '📅 Roster', colorClass: 'hover:text-[#003087] active-tab-all' },
+    { id: 'jadual', label: '🗓️ Jadual Tugas', colorClass: 'hover:text-[#003087] active-tab-all' },
     { id: 'duplicate', label: '⚠️ Bertindih', colorClass: 'hover:text-[#003087] active-tab-all' },
     { id: 'admin', label: '⚙️ Tetapan Admin', colorClass: 'hover:text-[#003087] active-tab-all' },
     { id: 'log', label: '📋 Log Masuk', colorClass: 'hover:text-[#003087] active-tab-all' },

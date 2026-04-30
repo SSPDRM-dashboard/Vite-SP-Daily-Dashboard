@@ -8,6 +8,7 @@ import DistrictTab from './tabs/DistrictTab';
 import LogTab from './tabs/LogTab';
 import CarianTab from './tabs/CarianTab';
 import RosterTab from './tabs/RosterTab';
+import JadualTugasTab from './tabs/JadualTugasTab';
 import DuplicateDutyTab from './tabs/DuplicateDutyTab';
 import AdminTab from './tabs/AdminTab';
 import { auth, db } from '../firebase';
@@ -56,7 +57,7 @@ export default function Dashboard({ currentUser, currentToken, onLogout }: any) 
 
   const allowedDistricts = useMemo(() => {
     if (isAdmin) {
-      return ['today', 'd1', 'd2', 'd3', 'd4', 'log', 'carian', 'roster', 'duplicate', 'admin'];
+      return ['today', 'd1', 'd2', 'd3', 'd4', 'log', 'carian', 'roster', 'jadual', 'duplicate', 'admin'];
     }
     
     const d = (currentUser?.district || '').trim().toLowerCase();
@@ -79,6 +80,7 @@ export default function Dashboard({ currentUser, currentToken, onLogout }: any) 
     }
     if (currentUser?.rosterPassword && currentUser.rosterPassword !== '-') {
       tabs.push('roster');
+      tabs.push('jadual');
     }
     
     return tabs.length > 0 ? tabs : ['today']; 
@@ -111,7 +113,7 @@ export default function Dashboard({ currentUser, currentToken, onLogout }: any) 
     
     // Carian and Roster tabs need full unlock at dashboard level
     if (activeTab === 'carian') return !isCarianUnlocked;
-    if (activeTab === 'roster') return !isRosterUnlocked;
+    if (activeTab === 'roster' || activeTab === 'jadual') return !isRosterUnlocked;
     
     return false;
   }, [activeTab, isAdmin, isCarianUnlocked, isRosterUnlocked]);
@@ -325,6 +327,12 @@ export default function Dashboard({ currentUser, currentToken, onLogout }: any) 
             )}
             {activeTab === 'roster' && (
               <RosterTab 
+                currentUser={currentUser} 
+                isFullAdmin={isAdmin}
+              />
+            )}
+            {activeTab === 'jadual' && (
+              <JadualTugasTab 
                 currentUser={currentUser} 
                 isFullAdmin={isAdmin}
               />
