@@ -167,8 +167,13 @@ export default function RosterTab({ currentUser, isFullAdmin }: any) {
         const parts = tarikh.split('/');
         if (parts.length === 3) {
           const day = parseInt(parts[0]);
+          let finalJenis = r.jenis || '';
+          if (finalJenis.toUpperCase().includes('LAIN-LAIN TUGAS') && r.lain) {
+            finalJenis = r.lain;
+          }
+
           map[nb].days[day] = {
-            jenis: r.jenis || '',
+            jenis: finalJenis,
             masa: r.masa || '',
             masaTamat: r.masaTamat || '',
             jam: r.jam || ''
