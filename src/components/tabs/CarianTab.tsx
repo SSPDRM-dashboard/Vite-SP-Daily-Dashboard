@@ -429,7 +429,7 @@ export default function CarianTab({ currentUser, currentToken, isFullAdmin }: an
                 </tr>
               </thead>
               <tbody>
-                {Array.from({ length: Math.max(18, sortedRows.length) }).map((_, idx) => {
+                {Array.from({ length: Math.max(15, sortedRows.length) }).map((_, idx) => {
                   const r = sortedRows[idx];
                   
                   if (!r) {
