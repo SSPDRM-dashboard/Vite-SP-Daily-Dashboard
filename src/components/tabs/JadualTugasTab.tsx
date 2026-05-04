@@ -360,9 +360,8 @@ export default function JadualTugasTab({ currentUser, isFullAdmin }: any) {
                   
                   return (
                   <React.Fragment key={`row-${idx}`}>
-                    {/* Upper row: Penugasan */}
                     <tr>
-                      <td className="border border-black p-1 font-bold" rowSpan={2}>
+                      <td className="border border-black p-1 font-bold">
                         <div className="flex flex-col items-center justify-center gap-1">
                           <span>{actualIdx}</span>
                           {selectedNoBadan && (
@@ -381,7 +380,7 @@ export default function JadualTugasTab({ currentUser, isFullAdmin }: any) {
                           )}
                         </div>
                       </td>
-                      <td className="border border-black p-1 font-bold" rowSpan={2}>
+                      <td className="border border-black p-1 font-bold">
                         <select 
                           className="w-full bg-transparent outline-none text-center font-bold text-[9px] cursor-pointer print:appearance-none"
                           value={selectedNoBadan}
@@ -399,7 +398,7 @@ export default function JadualTugasTab({ currentUser, isFullAdmin }: any) {
                           ))}
                         </select>
                       </td>
-                      <td className="border border-black p-1 font-bold text-left px-2" rowSpan={2}>
+                      <td className="border border-black p-1 font-bold text-left px-2">
                         <div className="line-clamp-3 text-[10px] leading-tight break-words whitespace-normal">
                           {user.pangkat} {user.nama.replace(/\d+/g, '').trim()}
                         </div>
@@ -412,29 +411,6 @@ export default function JadualTugasTab({ currentUser, isFullAdmin }: any) {
                             className={`border border-black p-1 text-[9px] leading-[1.2] font-bold ${isWeekend(day) ? 'bg-blue-300' : ''}`}
                           >
                             <div className="break-words whitespace-pre-line">{dayData?.jenis ? dayData.jenis.toUpperCase().replace('TUGAS PENTADBIRAN', 'TUGAS\nPENTADBIRAN') : ''}</div>
-                          </td>
-                        );
-                      })}
-                    </tr>
-                    {/* Lower row: Masa */}
-                    <tr>
-                      {activeDaysArray.map(day => {
-                        const dayData = user.days[day];
-                        return (
-                          <td 
-                            key={`masa-${day}`} 
-                            className={`border border-black p-1 text-[8px] leading-[1.2] font-bold ${isWeekend(day) ? 'bg-blue-300' : ''}`}
-                          >
-                            <div className="whitespace-normal">
-                              {dayData?.masa && dayData?.masaTamat && dayData.masaTamat !== '—' ? (
-                                <>
-                                  <div>{dayData.masa} -</div>
-                                  <div>{dayData.masaTamat}</div>
-                                </>
-                              ) : (
-                                <div>{dayData?.masa || ''}</div>
-                              )}
-                            </div>
                           </td>
                         );
                       })}
