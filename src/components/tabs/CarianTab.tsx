@@ -480,8 +480,8 @@ export default function CarianTab({ currentUser, currentToken, isFullAdmin }: an
                       <td className="border border-black p-0.5 font-bold">&nbsp;{tarikh}&nbsp;</td>
                       <td className="border border-black p-0.5 font-bold">{masaMula ? String(masaMula).replace(':', '') : ''}</td>
                       <td className="border border-black p-0.5 font-bold">{masaTamat}</td>
-                      <td className="border border-black p-0.5 font-bold uppercase whitespace-nowrap text-[9px]">
-                        &nbsp;{jenisTugas}&nbsp;
+                      <td className="border border-black p-0.5 font-bold uppercase text-[9px] break-words whitespace-pre-line px-1 leading-tight">
+                        {jenisTugas ? jenisTugas.replace('TUGAS PENTADBIRAN', 'TUGAS\nPENTADBIRAN') : ''}
                       </td>
                       <td className="border border-black p-0.5 font-bold">{sdData.masuk}</td>
                       <td className="border border-black p-0.5 font-bold">{sdData.keluar}</td>
