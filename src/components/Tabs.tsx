@@ -1,4 +1,6 @@
-export default function Tabs({ activeTab, setActiveTab, allowedDistricts, selectedDate, setSelectedDate }: any) {
+import { RefreshCw } from 'lucide-react';
+
+export default function Tabs({ activeTab, setActiveTab, allowedDistricts, selectedDate, setSelectedDate, lastRefresh, onRefresh, isLoading }: any) {
   const adminTabIds = ['carian', 'roster', 'jadual', 'duplicate', 'admin', 'log'];
   const daerahTabIds = ['today', 'd1', 'd2', 'd3', 'd4'];
 
@@ -23,7 +25,7 @@ export default function Tabs({ activeTab, setActiveTab, allowedDistricts, select
     <div className="bg-white border-b-2 border-slate-200 flex flex-col">
       {/* Upper row for admin tabs */}
       {visibleAdminTabs.length > 0 && (
-        <div className="px-4 md:px-8 border-b border-slate-100 flex overflow-x-auto items-center bg-slate-50">
+        <div className="px-4 md:px-8 border-b border-slate-100 flex overflow-x-auto items-center bg-slate-50 justify-between">
           <div className="flex gap-0 flex-1">
             {visibleAdminTabs.map(tab => (
               <button
@@ -38,6 +40,21 @@ export default function Tabs({ activeTab, setActiveTab, allowedDistricts, select
                 {tab.label}
               </button>
             ))}
+          </div>
+          
+          <div className="flex flex-col items-end justify-center ml-auto pl-4 pr-2 py-1">
+            <button
+              onClick={onRefresh}
+              disabled={isLoading}
+              className="flex items-center gap-1.5 text-[11px] text-[#003087] bg-white border border-slate-200 hover:bg-slate-50 hover:text-blue-800 transition-colors cursor-pointer disabled:opacity-50 font-semibold rounded-full px-3 py-1 shadow-sm mb-1"
+              title="Muat Semula Data"
+            >
+              <RefreshCw size={12} className={isLoading ? 'animate-spin' : ''} />
+              <span>Refresh</span>
+            </button>
+            <div className="text-[9px] text-slate-500 leading-none whitespace-nowrap mr-1">
+              {isLoading ? 'Sedang mengemaskini...' : `Terakhir dikemaskini: ${lastRefresh || '—'}`}
+            </div>
           </div>
         </div>
       )}

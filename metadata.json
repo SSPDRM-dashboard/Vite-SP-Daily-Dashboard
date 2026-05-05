@@ -1,5 +1,6 @@
 {
-  "name": "Dashboard daily",
+  "name": "SSp Dashboard daily",
   "description": "Sistem Penugasan Anggota SSPDRM Melaka",
-  "requestFramePermissions": []
+  "requestFramePermissions": [],
+  "majorCapabilities": []
 }

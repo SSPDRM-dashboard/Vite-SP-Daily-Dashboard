@@ -44,6 +44,7 @@ export default function Dashboard({ currentUser, currentToken, onLogout }: any) 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [lastRefresh, setLastRefresh] = useState('');
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
   
   const [isCarianUnlocked, setIsCarianUnlocked] = useState(false);
   const [isRosterUnlocked, setIsRosterUnlocked] = useState(false);
@@ -205,9 +206,15 @@ export default function Dashboard({ currentUser, currentToken, onLogout }: any) 
     };
 
     fetchSheetData();
-    const interval = setInterval(fetchSheetData, 60000); // Refresh every minute
+    const interval = setInterval(() => {
+      const currentHour = new Date().getHours();
+      // Auto refresh from 7 AM to 7 PM
+      if (currentHour >= 7 && currentHour < 19) {
+        fetchSheetData();
+      }
+    }, 3600000); // Refresh every hour
     return () => clearInterval(interval);
-  }, [selectedDate]);
+  }, [selectedDate, refreshTrigger]);
 
   const currentDateData = useMemo(() => {
     const p = selectedDate.split('-');
@@ -226,13 +233,19 @@ export default function Dashboard({ currentUser, currentToken, onLogout }: any) 
   return (
     <div className="min-h-screen bg-slate-100 text-slate-900 font-sans text-[13px] print:bg-white">
       <div className="print:hidden">
-        <Header currentUser={currentUser} onLogout={onLogout} lastRefresh={lastRefresh} />
+        <Header 
+          currentUser={currentUser} 
+          onLogout={onLogout} 
+        />
         <Tabs 
           activeTab={activeTab} 
           setActiveTab={setActiveTab} 
           allowedDistricts={allowedDistricts} 
           selectedDate={selectedDate}
           setSelectedDate={setSelectedDate}
+          lastRefresh={lastRefresh} 
+          onRefresh={() => setRefreshTrigger(prev => prev + 1)}
+          isLoading={loading}
         />
       </div>
       
@@ -349,7 +362,6 @@ export default function Dashboard({ currentUser, currentToken, onLogout }: any) 
 
       <footer className="text-center p-5 text-xs text-slate-500 border-t border-slate-200 mt-2 leading-relaxed print:hidden">
         Polis Diraja Malaysia &nbsp;·&nbsp; SSPDRM Melaka &nbsp;·&nbsp; Sistem Penugasan Anggota SSPDRM
-        &nbsp;·&nbsp; <span>Terakhir dikemaskini: {lastRefresh || '—'}</span>
         &nbsp;·&nbsp; <span className="text-slate-400">Live (Real-time)</span>
       </footer>
     </div>

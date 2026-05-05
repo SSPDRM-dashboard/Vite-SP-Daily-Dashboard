@@ -4,7 +4,7 @@ import { updatePassword } from 'firebase/auth';
 import { Shield, Loader2, X } from 'lucide-react';
 import { logoBase64 } from '../assets/logoBase64';
 
-export default function Header({ currentUser, onLogout, lastRefresh }: any) {
+export default function Header({ currentUser, onLogout, lastRefresh, onRefresh, isLoading }: any) {
   const [time, setTime] = useState(new Date());
   const [isChangingPassword, setIsChangingPassword] = useState(false);
   const [newPassword, setNewPassword] = useState('');
@@ -68,9 +68,9 @@ export default function Header({ currentUser, onLogout, lastRefresh }: any) {
           </div>
         </div>
         <div className="flex items-center gap-3">
-          <div className="text-right hidden md:block">
-            <div className="font-bold text-[15px] text-yellow-400">{dateStr}</div>
-            <div className="text-xs text-white/60">{timeStr}</div>
+          <div className="hidden md:flex flex-col items-end">
+            <div className="font-bold text-[15px] leading-none text-yellow-400 mt-0.5">{dateStr}</div>
+            <div className="text-xs text-white/60 leading-tight mt-0.5">{timeStr}</div>
           </div>
           <div className="flex items-center gap-1.5 bg-white/10 border border-white/20 rounded-full px-3 py-1.5 hidden sm:flex">
             <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
