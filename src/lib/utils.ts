@@ -189,10 +189,10 @@ export function expandRows(rows: any[]) {
     let lain = String(row[19] || '').trim();
     let colY = String(row[24] || '').trim();
     
-    if ((jenis.includes('MESYUARAT') || jenis.includes('PERJUMPAAN') || jenis.includes('PENTADBIRAN')) && colY) {
+    if ((jenis.includes('MESYUARAT') || jenis.includes('PERJUMPAAN')) && colY) {
       jenis = `${jenis} / ${colY}`;
       colY = ''; // Clear it so it doesn't get printed again in the UI
-    } else if ((lain.includes('MESYUARAT') || lain.includes('PERJUMPAAN') || lain.includes('PENTADBIRAN')) && colY) {
+    } else if ((lain.includes('MESYUARAT') || lain.includes('PERJUMPAAN')) && colY) {
       lain = `${lain} / ${colY}`;
       colY = '';
     }
