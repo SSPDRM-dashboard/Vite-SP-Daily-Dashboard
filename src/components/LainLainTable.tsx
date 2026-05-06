@@ -11,10 +11,10 @@ export default function LainLainTable({ categories, data, minRows = 0 }: Props) 
   categories.forEach(c => { counts[c] = { peg: 0, apr: 0 }; });
 
   data.forEach(d => {
-    const j = String(d.jenis || '').toUpperCase();
+    const l = String(d.lain || '').toUpperCase();
     for (const cat of categories) {
-      if (j.includes(cat.toUpperCase()) || 
-          (cat.includes('(') && j.includes(cat.split('(')[1].replace(')', '').trim()))) {
+      if (l.includes(cat.toUpperCase()) || 
+          (cat.includes('(') && l.includes(cat.split('(')[1].replace(')', '').trim()))) {
         if (isPeg(d)) counts[cat].peg++; else counts[cat].apr++;
         break;
       }
