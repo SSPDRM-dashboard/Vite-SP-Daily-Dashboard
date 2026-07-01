@@ -501,9 +501,9 @@ export default function CarianTab({ currentUser, currentToken, isFullAdmin }: an
                 </tr>
                 <tr>
                   <td className="border border-black p-0.5 font-bold text-right px-1 text-[9px]">JUMLAH JAM<br/>DITUNTUT</td>
-                  <td className="border border-black p-0.5 font-bold text-sm">{Math.min(totalJam, 48)}</td>
+                  <td className="border border-black p-0.5 font-bold text-sm">{Math.min(totalJam, 24)}</td>
                   <td className="border border-black p-0.5 font-bold text-right px-1 text-[9px]">JUMLAH ELAUN<br/>DITUNTUT RM</td>
-                  <td className="border border-black p-0.5 font-bold text-sm">{(Math.min(totalJam, 48) * kadarElaun).toFixed(2)}</td>
+                  <td className="border border-black p-0.5 font-bold text-sm">{(Math.min(totalJam, 24) * kadarElaun).toFixed(2)}</td>
                 </tr>
               </tbody>
             </table>
