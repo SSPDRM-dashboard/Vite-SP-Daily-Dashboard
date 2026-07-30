@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { normaliseDate, expandRows, normDaerah } from '../../lib/utils';
 import { GOOGLE_SHEET_URL } from '../../lib/constants';
 import Papa from 'papaparse';
+import * as XLSX from 'xlsx';
 
 export default function RosterTab({ currentUser, isFullAdmin }: any) {
   const [bulan, setBulan] = useState(new Date().getMonth() + 1);
@@ -214,6 +215,64 @@ export default function RosterTab({ currentUser, isFullAdmin }: any) {
     setSelectedRowUsers(newSelected);
   }, [paginatedData]);
 
+  const handleExportExcel = () => {
+    if (rosterData.length === 0) return;
+
+    const monthName = months[bulan - 1];
+    const daerahText = daerahFilter !== 'Semua Daerah' ? daerahFilter : 'SEMUA DAERAH';
+
+    const ws_data: any[][] = [
+      ['PASUKAN SUKARELAWAN SIMPANAN POLIS'],
+      [`JADUAL PENUGASAN PEGAWAI DAN ANGGOTA ${monthName.toUpperCase()} ${tahun}`],
+      [daerahText],
+      [],
+      ['Bil', 'NO BADAN', 'PANGKAT & NAMA', 'KETERANGAN', ...daysArray]
+    ];
+
+    rosterData.forEach((user: any, idx: number) => {
+      const pangkatNama = `${user.pangkat || ''} ${String(user.nama || '').replace(/\d+/g, '').trim()}`.trim();
+      const jenisRow: any[] = [idx + 1, user.noBadan, pangkatNama, 'TUGAS'];
+      const masaRow: any[] = ['', '', '', 'MASA'];
+
+      daysArray.forEach(day => {
+        const dayData = user.days[day];
+        const jenisStr = dayData?.jenis ? dayData.jenis.toUpperCase() : '';
+        let masaStr = '';
+        if (dayData?.masa && dayData?.masaTamat && dayData.masaTamat !== '—') {
+          masaStr = `${dayData.masa} - ${dayData.masaTamat}`;
+        } else if (dayData?.masa) {
+          masaStr = dayData.masa;
+        }
+
+        jenisRow.push(jenisStr);
+        masaRow.push(masaStr);
+      });
+
+      ws_data.push(jenisRow);
+      ws_data.push(masaRow);
+    });
+
+    const ws = XLSX.utils.aoa_to_sheet(ws_data);
+
+    // Set column widths
+    const colWidths = [
+      { wch: 6 },   // Bil
+      { wch: 14 },  // No Badan
+      { wch: 32 },  // Pangkat & Nama
+      { wch: 14 },  // Keterangan
+      ...daysArray.map(() => ({ wch: 16 })) // Days
+    ];
+    ws['!cols'] = colWidths;
+
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Roster');
+
+    const sanitizedDaerah = daerahText.replace(/[^a-zA-Z0-9]/g, '_');
+    const fileName = `Roster_Penugasan_${sanitizedDaerah}_${monthName}_${tahun}.xlsx`;
+
+    XLSX.writeFile(wb, fileName);
+  };
+
   return (
     <div className="animate-in fade-in duration-300">
       <div className="bg-gradient-to-br from-[#001f5c] to-[#0a3fa8] rounded-2xl p-4 md:p-6 flex items-center justify-between mb-5 text-white shadow-md print:hidden">
@@ -227,7 +286,7 @@ export default function RosterTab({ currentUser, isFullAdmin }: any) {
       </div>
 
       <div className="bg-white rounded-xl border border-slate-200 p-5 px-6 mb-5 shadow-sm print:hidden">
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-3 items-end">
           <div>
             <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">🏢 Daerah</label>
             <select 
@@ -264,16 +323,26 @@ export default function RosterTab({ currentUser, isFullAdmin }: any) {
             <button 
               onClick={fetchData}
               disabled={loading}
-              className="w-full bg-gradient-to-br from-[#001f5c] to-[#0a3fa8] text-white border-none rounded-lg p-2.5 px-7 text-sm font-bold cursor-pointer flex items-center justify-center gap-2 transition-opacity hover:opacity-90 disabled:opacity-70"
+              className="w-full bg-gradient-to-br from-[#001f5c] to-[#0a3fa8] text-white border-none rounded-lg p-2.5 px-3 text-xs md:text-sm font-bold cursor-pointer flex items-center justify-center gap-1.5 transition-opacity hover:opacity-90 disabled:opacity-70 whitespace-nowrap"
             >
               {loading ? '⏳ Memuatkan...' : '🔄 Segar Semula'}
             </button>
           </div>
           <div>
             <button 
+              onClick={handleExportExcel}
+              disabled={loading || rosterData.length === 0}
+              className="w-full bg-emerald-600 hover:bg-emerald-700 text-white border-none rounded-lg p-2.5 px-3 text-xs md:text-sm font-bold cursor-pointer flex items-center justify-center gap-1.5 transition-opacity disabled:opacity-70 whitespace-nowrap"
+              title="Muat Turun Jadual Roster Ke Format Excel"
+            >
+              📊 Muat Turun Excel
+            </button>
+          </div>
+          <div>
+            <button 
               onClick={() => window.print()}
               disabled={loading || rosterData.length === 0}
-              className="w-full bg-green-600 text-white border-none rounded-lg p-2.5 px-7 text-sm font-bold cursor-pointer flex items-center justify-center gap-2 transition-opacity hover:opacity-90 disabled:opacity-70"
+              className="w-full bg-slate-700 hover:bg-slate-800 text-white border-none rounded-lg p-2.5 px-3 text-xs md:text-sm font-bold cursor-pointer flex items-center justify-center gap-1.5 transition-opacity disabled:opacity-70 whitespace-nowrap"
             >
               🖨️ Cetak
             </button>
